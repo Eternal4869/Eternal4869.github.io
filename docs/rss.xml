@@ -1,2 +1,79 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Thu, 11 Jul 2024 01:42:23 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Test  Documentation</title><link>https://Eternal4869.github.io/post/Test%20%20Documentation.html</link><description>Test  Documentation.。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Test%20%20Documentation.html</guid><pubDate>Thu, 11 Jul 2024 01:39:54 +0000</pubDate></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sun, 11 May 2025 03:43:03 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>QT-初识</title><link>https://Eternal4869.github.io/post/QT--chu-shi.html</link><description># QT项目下的文件
+
+&gt;QT creator创建的 `.pro` 文件并未列出
+
+1. 头文件 
+ 
+- `mywidget.h`
+
+```C++
+#ifndef MYWIDGET_H
+#define MYWIDGET_H
+
+#include &lt;QWidget&gt;
+
+class myWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    myWidget(QWidget *parent = nullptr);
+    ~myWidget();
+};
+#endif // MYWIDGET_H
+```
+
+2. 源文件
+
+- `main.cpp`
+
+```C++
+#include 'mywidget.h'
+
+#include &lt;QApplication&gt;
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    // window
+    myWidget w;
+    // make window shown
+    w.show();
+    // make a into cycle
+    return a.exec();
+}
+```
+
+- `mywidget.cpp`
+
+```C++
+#include 'mywidget.h'
+#include &lt;QPushButton&gt;
+
+myWidget::myWidget(QWidget *parent)
+    : QWidget(parent)
+{
+    // 创建按钮
+    QPushButton *button = new QPushButton;
+    // 设置父窗口
+    button-&gt;setParent(this);
+    // 设置文本
+    button-&gt;setText('Hello');
+    QPushButton *button2 = new QPushButton('Second', this);
+    // 移动按钮
+    button2-&gt;move(400, 300);
+    // 设置窗口大小（mywidget的大小）
+    // resize(500, 400);
+    // 设置窗口为固定大小（不可伸缩）
+    setFixedSize(800, 500);
+    // 设置窗口标题
+    setWindowTitle(' ');
+    // 设置窗口为无边框样式
+    setWindowFlags(Qt::FramelessWindowHint);
+    // 移动窗口至 `0, 0` 的位置
+    this-&gt;move(0,0);
+}
+
+myWidget::~myWidget() {}
+```。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/QT--chu-shi.html</guid><pubDate>Sun, 11 May 2025 03:23:21 +0000</pubDate></item><item><title>Test  Documentation</title><link>https://Eternal4869.github.io/post/Test%20%20Documentation.html</link><description>Test  Documentation.。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Test%20%20Documentation.html</guid><pubDate>Thu, 11 Jul 2024 01:39:54 +0000</pubDate></item></channel></rss>
