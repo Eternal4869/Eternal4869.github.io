@@ -10,17 +10,13 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# `BeanFactory` 和 `ApplicationContext` 之间的关系
-
-- `BeanFactory` 是 Spring的核心容器。">
-<meta property="og:title" content="容器接口（未完）">
-<meta property="og:description" content="# `BeanFactory` 和 `ApplicationContext` 之间的关系
-
-- `BeanFactory` 是 Spring的核心容器。">
+<meta name="description" content="[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。">
+<meta property="og:title" content="Java basic">
+<meta property="og:description" content="[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html">
+<meta property="og:url" content="https://Eternal4869.github.io/post/Java%20basic.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/73345601?v=4">
-<title>容器接口（未完）</title>
+<title>Java basic</title>
 
 
 
@@ -53,7 +49,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">容器接口（未完）</h1>
+<h1 class="postTitle">Java basic</h1>
 <div class="title-right">
     <a href="https://Eternal4869.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -61,7 +57,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/10" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/11" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -77,23 +73,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1><code class="notranslate">BeanFactory</code> 和 <code class="notranslate">ApplicationContext</code> 之间的关系</h1>
-<ul>
-<li><code class="notranslate">BeanFactory</code> 是 Spring的核心容器。</li>
-<li><code class="notranslate">ApplicationContext</code> 间接继承了 <code class="notranslate">BeanFactory</code> 。<code class="notranslate">ApplicationContext</code> 对 <code class="notranslate">BeanFactory</code> 进行了一些功能扩展。</li>
-</ul>
-<h1><code class="notranslate">BeanFactory</code> 的作用</h1>
-<ul>
-<li>控制反转，依赖注入，直至Bean的生命周期的各种功能，都是由其实现类提供。（其中典型的为 <code class="notranslate"> DefaultListableBeanFactory</code> ）</li>
-</ul>
-<h1><code class="notranslate">ApplicationContext</code> 比 <code class="notranslate">BeanFactory</code> 多出了哪些功能？</h1>
-<p>从继承的接口来看，多出了以下四点功能：</p>
-<ul>
-<li><code class="notranslate">MessageSource</code>: 处理国际化信息的能力。（将结果翻译为各国语言）</li>
-<li><code class="notranslate">ResourcePatternResolver</code>: 利用通配符来获取/匹配资源。</li>
-<li><code class="notranslate">ApplicationEventPublisher</code>: 发布事件对象。</li>
-<li><code class="notranslate">EnvironmentCapable</code>: 获取/处理环境信息。（系统环境变量/Spring环境变量）</li>
-</ul></div>
+<div class="markdown-body" id="postBody"><p><a href="https://github.com/user-attachments/files/25562849/Java.pdf">Java八股.pdf</a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
