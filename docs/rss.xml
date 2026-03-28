@@ -1,5 +1,89 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Thu, 26 Feb 2026 03:09:09 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java basic</title><link>https://Eternal4869.github.io/post/Java%20basic.html</link><description>[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20basic.html</guid><pubDate>Thu, 26 Feb 2026 03:05:03 +0000</pubDate></item><item><title>容器接口（未完）</title><link>https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html</link><description># `BeanFactory` 和 `ApplicationContext` 之间的关系
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 09:41:13 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 基础</title><link>https://Eternal4869.github.io/post/Java%20-ji-chu.html</link><description># 基础篇
+
+&gt; ***基础篇要点：算法、数据结构、基础设计模式***
+
+## 1. 二分查找
+
+**要求**
+
+* 能够用自己语言描述二分查找算法
+* 能够手写二分查找代码
+* 能够解答一些变化后的考法
+
+**算法描述**
+
+1. 前提：有已排序数组 A（假设已经做好）
+
+2. 定义左边界 L、右边界 R，确定搜索范围，循环执行二分查找（3、4两步）
+
+3. 获取中间索引 M = Floor((L+R) /2)
+
+4. 中间索引的值  A[M] 与待搜索的值 T 进行比较
+
+   ① A[M] == T 表示找到，返回中间索引
+
+   ② A[M] &gt; T，中间值右侧的其它元素都大于 T，无需比较，中间索引左边去找，M - 1 设置为右边界，重新查找
+
+   ③ A[M] &lt; T，中间值左侧的其它元素都小于 T，无需比较，中间索引右边去找， M + 1 设置为左边界，重新查找
+
+5. 当 L &gt; R 时，表示没有找到，应结束循环
+
+&gt; *更形象的描述请参考：binary_search.html*
+
+**算法实现**
+
+```java
+public static int binarySearch(int[] a, int t) {
+    int l = 0, r = a.length - 1, m;
+    while (l &lt;= r) {
+        m = (l + r) / 2;
+        if (a[m] == t) {
+            return m;
+        } else if (a[m] &gt; t) {
+            r = m - 1;
+        } else {
+            l = m + 1;
+        }
+    }
+    return -1;
+}
+```
+
+**测试代码**
+
+```java
+public static void main(String[] args) {
+    int[] array = {1, 5, 8, 11, 19, 22, 31, 35, 40, 45, 48, 49, 50};
+    int target = 47;
+    int idx = binarySearch(array, target);
+    System.out.println(idx);
+}
+```
+
+**解决整数溢出问题**
+
+当 l 和 r 都较大时，`l + r` 有可能超过整数范围，造成运算错误，解决方法有两种：
+
+```java
+int m = l + (r - l) / 2;
+```
+
+还有一种是：
+
+```java
+int m = (l + r) &gt;&gt;&gt; 1;
+```
+
+**其它考法**
+
+1. 有一个有序表为 1,5,8,11,19,22,31,35,40,45,48,49,50 当二分查找值为 48 的结点时，查找成功需要比较的次数 
+
+2. 使用二分法在序列 1,4,6,7,15,33,39,50,64,78,75,81,89,96 中查找元素 81 时，需要经过（   ）次比较
+
+3. 在拥有128个元素的数组中二分查找一个数，需要比较的次数最多不超过多少次
+
+对于前两个题目，记得一个简要判断口诀：奇数二分取中间，偶数二分取中间靠左。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20-ji-chu.html</guid><pubDate>Sat, 28 Mar 2026 09:40:43 +0000</pubDate></item><item><title>Java basic</title><link>https://Eternal4869.github.io/post/Java%20basic.html</link><description>[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20basic.html</guid><pubDate>Thu, 26 Feb 2026 03:05:03 +0000</pubDate></item><item><title>容器接口（未完）</title><link>https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html</link><description># `BeanFactory` 和 `ApplicationContext` 之间的关系
 
 - `BeanFactory` 是 Spring的核心容器。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html</guid><pubDate>Mon, 22 Sep 2025 11:56:47 +0000</pubDate></item><item><title>MFC ActiveX 微软官方文档</title><link>https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</link><description>https://learn.microsoft.com/zh-cn/cpp/mfc/mfc-activex-controls?view=msvc-170。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</guid><pubDate>Sat, 30 Aug 2025 14:49:47 +0000</pubDate></item><item><title>QT-Lambda表达式</title><link>https://Eternal4869.github.io/post/QT-Lambda-biao-da-shi.html</link><description># QT-Lambda表达式
 
