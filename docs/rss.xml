@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 10:09:38 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 虚拟机</title><link>https://Eternal4869.github.io/post/Java%20-xu-ni-ji.html</link><description># 虚拟机篇
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 10:22:54 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 框架</title><link>https://Eternal4869.github.io/post/Java%20-kuang-jia.html</link><description># 框架篇
+
+## 1. Spring refresh 流程
+
+**要求**
+
+* 掌握 refresh 的 12 个步骤
+
+**Spring refresh 概述**
+
+refresh 是 AbstractApplicationContext 中的一个方法，负责初始化 ApplicationContext 容器，容器必须调用 refresh 才能正常工作。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20-kuang-jia.html</guid><pubDate>Sat, 28 Mar 2026 10:22:23 +0000</pubDate></item><item><title>Java 虚拟机</title><link>https://Eternal4869.github.io/post/Java%20-xu-ni-ji.html</link><description># 虚拟机篇
 
 ## 1. JVM 内存结构
 
