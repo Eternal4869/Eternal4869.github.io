@@ -1,5 +1,86 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 09:48:04 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 并发</title><link>https://Eternal4869.github.io/post/Java%20-bing-fa.html</link><description># 并发篇
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 10:09:38 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 虚拟机</title><link>https://Eternal4869.github.io/post/Java%20-xu-ni-ji.html</link><description># 虚拟机篇
+
+## 1. JVM 内存结构
+
+**要求**
+
+* 掌握 JVM 内存结构划分
+* 尤其要知道方法区、永久代、元空间的关系
+
+**结合一段 java 代码的执行理解内存划分**
+
+&lt;img width='960' height='391' alt='Image' src='https://github.com/user-attachments/assets/70ee2bb3-6258-40c0-b5f7-e4b4e7ed671c' /&gt;
+
+* 执行 javac 命令编译源代码为字节码
+* 执行 java 命令
+  1. 创建 JVM，调用类加载子系统加载 class，将类的信息存入**方法区**
+  2. 创建 main 线程，使用的内存区域是 **JVM 虚拟机栈**，开始执行 main 方法代码
+  3. 如果遇到了未见过的类，会继续触发类加载过程，同样会存入**方法区**
+  4. 需要创建对象，会使用**堆**内存来存储对象
+  5. 不再使用的对象，会由**垃圾回收器**在内存不足时回收其内存
+  6. 调用方法时，方法内的局部变量、方法参数所使用的是  **JVM 虚拟机栈**中的栈帧内存
+  7. 调用方法时，先要到**方法区**获得到该方法的字节码指令，由**解释器**将字节码指令解释为机器码执行
+  8. 调用方法时，会将要执行的指令行号读到**程序计数器**，这样当发生了线程切换，恢复时就可以从中断的位置继续
+  9. 对于非 java 实现的方法调用，使用内存称为**本地方法栈**（见说明）
+  10. 对于热点方法调用，或者频繁的循环代码，由 **JIT 即时编译器**将这些代码编译成机器码缓存，提高执行性能
+
+说明
+
+* 加粗字体代表了 JVM 虚拟机组件
+* 对于 Oracle 的 Hotspot 虚拟机实现，不区分虚拟机栈和本地方法栈
+
+**会发生内存溢出的区域**
+
+* 不会出现内存溢出的区域 – 程序计数器
+* 出现 OutOfMemoryError 的情况
+  * 堆内存耗尽 – 对象越来越多，又一直在使用，不能被垃圾回收
+  * 方法区内存耗尽 – 加载的类越来越多，很多框架都会在运行期间动态产生新的类
+  * 虚拟机栈累积 – 每个线程最多会占用 1 M 内存，线程个数越来越多，而又长时间运行不销毁时
+* 出现 StackOverflowError 的区域
+  * JVM 虚拟机栈，原因有方法递归调用未正确结束、反序列化 json 时循环引用
+
+**方法区、永久代、元空间**
+
+* **方法区**是 JVM 规范中定义的一块内存区域，用来存储类元数据、方法字节码、即时编译器需要的信息等
+* **永久代**是 Hotspot 虚拟机对 JVM 规范的实现（1.8 之前）
+* **元空间**是 Hotspot 虚拟机对 JVM 规范的另一种实现（1.8 以后），使用本地内存作为这些信息的存储空间
+
+&lt;img width='805' height='381' alt='Image' src='https://github.com/user-attachments/assets/67c4abec-b405-4418-8689-ef50565ec62e' /&gt;
+
+从这张图学到三点
+
+* 当第一次用到某个类是，由类加载器将 class 文件的类元信息读入，并存储于元空间
+* X，Y 的类元信息是存储于元空间中，无法直接访问
+* 可以用 X.class，Y.class 间接访问类元信息，它们俩属于 java 对象，我们的代码中可以使用
+
+&lt;img width='829' height='602' alt='Image' src='https://github.com/user-attachments/assets/4bb4b911-69d9-4041-af9e-9c6613301354' /&gt;
+
+从这张图可以学到
+
+* 堆内存中：当一个**类加载器对象**，这个类加载器对象加载的所有**类对象**，这些类对象对应的所有**实例对象**都没人引用时，GC 时就会对它们占用的对内存进行释放
+* 元空间中：内存释放**以类加载器为单位**，当堆中类加载器内存释放时，对应的元空间中的类元信息也会释放
+
+
+
+## 2. JVM 内存参数
+
+**要求** 
+
+* 熟悉常见的 JVM 参数，尤其和大小相关的
+
+**堆内存，按大小设置**
+
+&lt;img width='727' height='359' alt='Image' src='https://github.com/user-attachments/assets/54e7c404-cef6-4eda-95a0-ee794a2aab22' /&gt;
+
+解释：
+
+* -Xms 最小堆内存（包括新生代和老年代）
+* -Xmx 最大对内存（包括新生代和老年代）
+* 通常建议将 -Xms 与 -Xmx 设置为大小相等，即不需要保留内存，不需要从小到大增长，这样性能较好
+* -XX:NewSize 与 -XX:MaxNewSize 设置新生代的最小与最大值，但一般不建议设置，由 JVM 自己控制
+* -Xmn 设置新生代大小，相当于同时设置了 -XX:NewSize 与 -XX:MaxNewSize 并且取值相等
+* 保留是指，一开始不会占用那么多内存，随着使用内存越来越多，会逐步使用这部分保留内存。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20-xu-ni-ji.html</guid><pubDate>Sat, 28 Mar 2026 10:09:08 +0000</pubDate></item><item><title>Java 并发</title><link>https://Eternal4869.github.io/post/Java%20-bing-fa.html</link><description># 并发篇
 
 ## 1. 线程状态
 
