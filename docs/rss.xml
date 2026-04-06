@@ -1,5 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Sat, 28 Mar 2026 10:22:54 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Java 框架</title><link>https://Eternal4869.github.io/post/Java%20-kuang-jia.html</link><description># 框架篇
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Mon, 06 Apr 2026 11:11:18 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>Spring 高级</title><link>https://Eternal4869.github.io/post/Spring%20-gao-ji.html</link><description>## 容器与 bean
+
+### 1) 容器接口
+
+* BeanFactory 接口，典型功能有：
+  * getBean
+
+* ApplicationContext 接口，是 BeanFactory 的子接口。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Spring%20-gao-ji.html</guid><pubDate>Mon, 06 Apr 2026 11:10:48 +0000</pubDate></item><item><title>Java 框架</title><link>https://Eternal4869.github.io/post/Java%20-kuang-jia.html</link><description># 框架篇
 
 ## 1. Spring refresh 流程
 
