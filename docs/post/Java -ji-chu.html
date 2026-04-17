@@ -912,11 +912,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>e 和 next 都是局部变量，用来指向当前节点和下一个节点</li>
 <li>线程1（绿色）的临时变量 e 和 next 刚引用了这俩节点，还未来得及移动节点，发生了线程切换，由线程2（蓝色）完成扩容和迁移</li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4f9ffb6e-9db3-4eac-8284-5ba9d26aa0dd"><img width="1129" height="511" alt="Image" src="https://github.com/user-attachments/assets/4f9ffb6e-9db3-4eac-8284-5ba9d26aa0dd" style="max-width: 100%; height: auto; max-height: 511px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4f9ffb6e-9db3-4eac-8284-5ba9d26aa0dd"><img width="1129" height="511" alt="Image" src="https://github.com/user-attachments/assets/4f9ffb6e-9db3-4eac-8284-5ba9d26aa0dd" style="max-width: 100%; height: auto; max-height: 511px;; aspect-ratio: 1129 / 511; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <ul>
 <li>线程2 扩容完成，由于头插法，链表顺序颠倒。但线程1 的临时变量 e 和 next 还引用了这俩节点，还要再来一遍迁移</li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7c459991-1211-46b3-9afc-b7d462738444"><img width="1117" height="629" alt="Image" src="https://github.com/user-attachments/assets/7c459991-1211-46b3-9afc-b7d462738444" style="max-width: 100%; height: auto; max-height: 629px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7c459991-1211-46b3-9afc-b7d462738444"><img width="1117" height="629" alt="Image" src="https://github.com/user-attachments/assets/7c459991-1211-46b3-9afc-b7d462738444" style="max-width: 100%; height: auto; max-height: 629px;; aspect-ratio: 1117 / 629; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <ul>
 <li>第一次循环
 <ul>
@@ -926,7 +926,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 </li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0d8cfcc5-96b2-4baf-9c72-2a9f923d34ef"><img width="1135" height="642" alt="Image" src="https://github.com/user-attachments/assets/0d8cfcc5-96b2-4baf-9c72-2a9f923d34ef" style="max-width: 100%; height: auto; max-height: 642px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0d8cfcc5-96b2-4baf-9c72-2a9f923d34ef"><img width="1135" height="642" alt="Image" src="https://github.com/user-attachments/assets/0d8cfcc5-96b2-4baf-9c72-2a9f923d34ef" style="max-width: 100%; height: auto; max-height: 642px;; aspect-ratio: 1135 / 642; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <ul>
 <li>第二次循环
 <ul>
@@ -936,7 +936,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 </li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c51140b2-c871-4bd6-bd15-62f4878deaf5"><img width="1135" height="645" alt="Image" src="https://github.com/user-attachments/assets/c51140b2-c871-4bd6-bd15-62f4878deaf5" style="max-width: 100%; height: auto; max-height: 645px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c51140b2-c871-4bd6-bd15-62f4878deaf5"><img width="1135" height="645" alt="Image" src="https://github.com/user-attachments/assets/c51140b2-c871-4bd6-bd15-62f4878deaf5" style="max-width: 100%; height: auto; max-height: 645px;; aspect-ratio: 1135 / 645; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <ul>
 <li>第三次循环
 <ul>
@@ -946,7 +946,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 </li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1148b9d3-a63f-4af8-bbdb-f6cb0b85c1de"><img width="1121" height="636" alt="Image" src="https://github.com/user-attachments/assets/1148b9d3-a63f-4af8-bbdb-f6cb0b85c1de" style="max-width: 100%; height: auto; max-height: 636px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1148b9d3-a63f-4af8-bbdb-f6cb0b85c1de"><img width="1121" height="636" alt="Image" src="https://github.com/user-attachments/assets/1148b9d3-a63f-4af8-bbdb-f6cb0b85c1de" style="max-width: 100%; height: auto; max-height: 636px;; aspect-ratio: 1121 / 636; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p><strong>数据错乱（1.7，1.8 都会存在）</strong></p>
 <ul>
 <li>代码参考 <code class="notranslate">day01.map.HashMapMissData</code>，具体调试步骤参考视频</li>
