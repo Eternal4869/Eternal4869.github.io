@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/73345601?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 并发篇
+
+## 1. 线程状态
+
+**要求**
+
+* 掌握 Java 线程六种状态
+* 掌握 Java 线程状态转换
+* 能理解五种状态与六种状态两种说法的区别
+
+**六种状态及转换**
+
+<img width='675' height='472' alt='Image' src='https://github.com/user-attachments/assets/24c54d67-f648-4a35-ba04-226470567f32' />
+
+分别是
+
+* 新建
+  * 当一个线程对象被创建，但还未调用 start 方法时处于**新建**状态
+  * 此时未与操作系统底层线程关联
+* 可运行
+  * 调用了 start 方法，就会由**新建**进入**可运行**
+  * 此时与底层线程关联，由操作系统调度执行
+* 终结
+  * 线程内代码已经执行完毕，由**可运行**进入**终结**
+  * 此时会取消与底层线程关联
+* 阻塞
+  * 当获取锁失败后，由**可运行**进入 Monitor 的阻塞队列**阻塞**，此时不占用 cpu 时间
+  * 当持锁线程释放锁时，会按照一定规则唤醒阻塞队列中的**阻塞**线程，唤醒后的线程进入**可运行**状态
+* 等待
+  * 当获取锁成功后，但由于条件不满足，调用了 wait() 方法，此时从**可运行**状态释放锁进入 Monitor 等待集合**等待**，同样不占用 cpu 时间
+  * 当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的**等待**线程，恢复为**可运行**状态
+* 有时限等待
+  * 当获取锁成功后，但由于条件不满足，调用了 wait(long) 方法，此时从**可运行**状态释放锁进入 Monitor 等待集合进行**有时限等待**，同样不占用 cpu 时间
+  * 当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的**有时限等待**线程，恢复为**可运行**状态，并重新去竞争锁
+  * 如果等待超时，也会从**有时限等待**状态恢复为**可运行**状态，并重新去竞争锁
+  * 还有一种情况是调用 sleep(long) 方法也会从**可运行**状态进入**有时限等待**状态，但与 Monitor 无关，不需要主动唤醒，超时时间到自然恢复为**可运行**状态
+
+> ***其它情况（只需了解）***
+>
+> * 可以用 interrupt() 方法打断**等待**、**有时限等待**的线程，让它们恢复为**可运行**状态
+> * park，unpark 等方法也可以让线程等待和唤醒
+
+**五种状态**
+
+五种状态的说法来自于操作系统层面的划分
+
+<img width='679' height='479' alt='Image' src='https://github.com/user-attachments/assets/ee958dde-b10b-4ff3-90a6-d6bc35889090' />
+
+* 运行态：分到 cpu 时间，能真正执行线程内代码的
+* 就绪态：有资格分到 cpu 时间，但还未轮到它的
+* 阻塞态：没资格分到 cpu 时间的
+  * 涵盖了 java 状态中提到的**阻塞**、**等待**、**有时限等待**
+  * 多出了阻塞 I/O，指线程在调用阻塞 I/O 时，实际活由 I/O 设备完成，此时线程无事可做，只能干等
+* 新建与终结态：与 java 中同名状态类似，不再啰嗦
+
+
+
+## 2. 线程池
+
+**要求**
+
+* 掌握线程池的 7 大核心参数
+
+**七大参数**
+
+1. corePoolSize 核心线程数目 - 池中会保留的最多线程数
+2. maximumPoolSize 最大线程数目 - 核心线程+救急线程的最大数目
+3. keepAliveTime 生存时间 - 救急线程的生存时间，生存时间内没有新任务，此线程资源会释放
+4. unit 时间单位 - 救急线程的生存时间单位，如秒、毫秒等
+5. workQueue - 当没有空闲核心线程时，新来任务会加入到此队列排队，队列满会创建救急线程执行任务
+6. threadFactory 线程工厂 - 可以定制线程对象的创建，例如设置线程名字、是否是守护线程等
+7. handler 拒绝策略 - 当所有线程都在繁忙，workQueue 也放满时，会触发拒绝策略
+   1. 抛异常 java.util.concurrent.ThreadPoolExecutor.AbortPolicy
+   2. 由调用者执行任务 java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+   3. 丢弃任务 java.util.concurrent.ThreadPoolExecutor.DiscardPolicy
+   4. 丢弃最早排队任务 java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy
+
+<img width='796' height='510' alt='Image' src='https://github.com/user-attachments/assets/c754e80d-e69b-4779-8229-946e188d87ed' />
+
+> ***代码说明***
+>
+> day02.TestThreadPoolExecutor 以较为形象的方式演示了线程池的核心组成
+
+
+
+## 3. wait vs sleep
+
+**要求**
+
+* 能够说出二者区别
+
+**一个共同点，三个不同点**
+
+共同点
+
+* wait() ，wait(long) 和 sleep(long) 的效果都是让当前线程暂时放弃 CPU 的使用权，进入阻塞状态
+
+不同点
+
+* 方法归属不同
+  * sleep(long) 是 Thread 的静态方法
+  * 而 wait()，wait(long) 都是 Object 的成员方法，每个对象都有
+
+* 醒来时机不同
+  * 执行 sleep(long) 和 wait(long) 的线程都会在等待相应毫秒后醒来
+  * wait(long) 和 wait() 还可以被 notify 唤醒，wait() 如果不唤醒就一直等下去
+  * 它们都可以被打断唤醒
+
+* 锁特性不同（重点）
+  * wait 方法的调用必须先获取 wait 对象的锁，而 sleep 则无此限制
+  * wait 方法执行后会释放对象锁，允许其它线程获得该对象锁（我放弃 cpu，但你们还可以用）
+  * 而 sleep 如果在 synchronized 代码块中执行，并不会释放对象锁（我放弃 cpu，你们也用不了）
+
+
+
+## 4. lock vs synchronized
+
+**要求**
+
+* 掌握 lock 与 synchronized 的区别
+* 理解 ReentrantLock 的公平、非公平锁
+* 理解 ReentrantLock 中的条件变量
+
+**三个层面**
+
+不同点
+
+* 语法层面
+  * synchronized 是关键字，源码在 jvm 中，用 c++ 语言实现
+  * Lock 是接口，源码由 jdk 提供，用 java 语言实现
+  * 使用 synchronized 时，退出同步代码块锁会自动释放，而使用 Lock 时，需要手动调用 unlock 方法释放锁
+* 功能层面
+  * 二者均属于悲观锁、都具备基本的互斥、同步、锁重入功能
+  * Lock 提供了许多 synchronized 不具备的功能，例如获取等待状态、公平锁、可打断、可超时、多条件变量
+  * Lock 有适合不同场景的实现，如 ReentrantLock， ReentrantReadWriteLock
+* 性能层面
+  * 在没有竞争时，synchronized 做了很多优化，如偏向锁、轻量级锁，性能不赖
+  * 在竞争激烈时，Lock 的实现通常会提供更好的性能
+
+**公平锁**
+
+* 公平锁的公平体现
+  * **已经处在阻塞队列**中的线程（不考虑超时）始终都是公平的，先进先出
+  * 公平锁是指**未处于阻塞队列**中的线程来争抢锁，如果队列不为空，则老实到队尾等待
+  * 非公平锁是指**未处于阻塞队列**中的线程来争抢锁，与队列头唤醒的线程去竞争，谁抢到算谁的
+* 公平锁会降低吞吐量，一般不用
+
+**条件变量**
+
+* ReentrantLock 中的条件变量功能类似于普通 synchronized 的 wait，notify，用在当线程获得锁后，发现条件不满足时，临时等待的链表结构
+* 与 synchronized 的等待集合不同之处在于，ReentrantLock 中的条件变量可以有多个，可以实现更精细的等待、唤醒控制
+
+> ***代码说明***
+>
+> * day02.TestReentrantLock 用较为形象的方式演示 ReentrantLock 的内部结构
+
+
+
+## 5. volatile
+
+**要求**
+
+* 掌握线程安全要考虑的三个问题
+* 掌握 volatile 能解决哪些问题
+
+**原子性**
+
+* 起因：多线程下，不同线程的**指令发生了交错**导致的共享变量的读写混乱
+* 解决：用悲观锁或乐观锁解决，volatile 并不能解决原子性
+
+**可见性**
+
+* 起因：由于**编译器优化、或缓存优化、或 CPU 指令重排序优化**导致的对共享变量所做的修改另外的线程看不到
+* 解决：用 volatile 修饰共享变量，能够防止编译器等优化发生，让一个线程对共享变量的修改对另一个线程可见
+
+**有序性**
+
+* 起因：由于**编译器优化、或缓存优化、或 CPU 指令重排序优化**导致指令的实际执行顺序与编写顺序不一致
+* 解决：用 volatile 修饰共享变量会在读、写共享变量时加入不同的屏障，阻止其他读写操作越过屏障，从而达到阻止重排序的效果
+* 注意：
+  * **volatile 变量写**加的屏障是阻止上方其它写操作越过屏障排到 **volatile 变量写**之下
+  * **volatile 变量读**加的屏障是阻止下方其它读操作越过屏障排到 **volatile 变量读**之上
+  * volatile 读写加入的屏障只能防止同一线程内的指令重排
+
+> ***代码说明***
+>
+> * day02.threadsafe.AddAndSubtract 演示原子性
+> * day02.threadsafe.ForeverLoop 演示可见性
+>   * 注意：本例经实践检验是编译器优化导致的可见性问题
+> * day02.threadsafe.Reordering 演示有序性
+>   * 需要打成 jar 包后测试
+> * 请同时参考视频讲解
+
+
+
+## 6. 悲观锁 vs 乐观锁
+
+**要求**
+
+* 掌握悲观锁和乐观锁的区别
+
+**对比悲观锁与乐观锁**
+
+* 悲观锁的代表是 synchronized 和 Lock 锁
+  * 其核心思想是【线程只有占有了锁，才能去操作共享变量，每次只有一个线程占锁成功，获取锁失败的线程，都得停下来等待】
+  * 线程从运行到阻塞、再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能
+  * 实际上，线程在获取 synchronized 和 Lock 锁时，如果锁已被占用，都会做几次重试操作，减少阻塞的机会
+
+* 乐观锁的代表是 AtomicInteger，使用 cas 来保证原子性
+  * 其核心思想是【无需加锁，每次只有一个线程能成功修改共享变量，其它失败的线程不需要停止，不断重试直至成功】
+  * 由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换
+  * 它需要多核 cpu 支持，且线程数不应超过 cpu 核数
+
+> ***代码说明***
+>
+> * day02.SyncVsCas 演示了分别使用乐观锁和悲观锁解决原子赋值
+> * 请同时参考视频讲解
+
+
+
+## 7. Hashtable vs ConcurrentHashMap
+
+**要求**
+
+* 掌握 Hashtable 与 ConcurrentHashMap 的区别
+* 掌握 ConcurrentHashMap 在不同版本的实现区别
+
+> 更形象的演示，见资料中的 hash-demo.jar，运行需要 jdk14 以上环境，进入 jar 包目录，执行下面命令
+>
+> ```
+> java -jar --add-exports java.base/jdk.internal.misc=ALL-UNNAMED hash-demo.jar
+> ```
+
+**Hashtable 对比 ConcurrentHashMap**
+
+* Hashtable 与 ConcurrentHashMap 都是线程安全的 Map 集合
+* Hashtable 并发度低，整个 Hashtable 对应一把锁，同一时刻，只能有一个线程操作它
+* ConcurrentHashMap 并发度高，整个 ConcurrentHashMap 对应多把锁，只要线程访问的是不同锁，那么不会冲突
+
+**ConcurrentHashMap 1.7**
+
+* 数据结构：`Segment(大数组) + HashEntry(小数组) + 链表`，每个 Segment 对应一把锁，如果多个线程访问不同的 Segment，则不会冲突
+* 并发度：Segment 数组大小即并发度，决定了同一时刻最多能有多少个线程并发访问。">
+<meta property="og:title" content="Java 并发">
+<meta property="og:description" content="# 并发篇
+
+## 1. 线程状态
+
+**要求**
+
+* 掌握 Java 线程六种状态
+* 掌握 Java 线程状态转换
+* 能理解五种状态与六种状态两种说法的区别
+
+**六种状态及转换**
+
+<img width='675' height='472' alt='Image' src='https://github.com/user-attachments/assets/24c54d67-f648-4a35-ba04-226470567f32' />
+
+分别是
+
+* 新建
+  * 当一个线程对象被创建，但还未调用 start 方法时处于**新建**状态
+  * 此时未与操作系统底层线程关联
+* 可运行
+  * 调用了 start 方法，就会由**新建**进入**可运行**
+  * 此时与底层线程关联，由操作系统调度执行
+* 终结
+  * 线程内代码已经执行完毕，由**可运行**进入**终结**
+  * 此时会取消与底层线程关联
+* 阻塞
+  * 当获取锁失败后，由**可运行**进入 Monitor 的阻塞队列**阻塞**，此时不占用 cpu 时间
+  * 当持锁线程释放锁时，会按照一定规则唤醒阻塞队列中的**阻塞**线程，唤醒后的线程进入**可运行**状态
+* 等待
+  * 当获取锁成功后，但由于条件不满足，调用了 wait() 方法，此时从**可运行**状态释放锁进入 Monitor 等待集合**等待**，同样不占用 cpu 时间
+  * 当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的**等待**线程，恢复为**可运行**状态
+* 有时限等待
+  * 当获取锁成功后，但由于条件不满足，调用了 wait(long) 方法，此时从**可运行**状态释放锁进入 Monitor 等待集合进行**有时限等待**，同样不占用 cpu 时间
+  * 当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的**有时限等待**线程，恢复为**可运行**状态，并重新去竞争锁
+  * 如果等待超时，也会从**有时限等待**状态恢复为**可运行**状态，并重新去竞争锁
+  * 还有一种情况是调用 sleep(long) 方法也会从**可运行**状态进入**有时限等待**状态，但与 Monitor 无关，不需要主动唤醒，超时时间到自然恢复为**可运行**状态
+
+> ***其它情况（只需了解）***
+>
+> * 可以用 interrupt() 方法打断**等待**、**有时限等待**的线程，让它们恢复为**可运行**状态
+> * park，unpark 等方法也可以让线程等待和唤醒
+
+**五种状态**
+
+五种状态的说法来自于操作系统层面的划分
+
+<img width='679' height='479' alt='Image' src='https://github.com/user-attachments/assets/ee958dde-b10b-4ff3-90a6-d6bc35889090' />
+
+* 运行态：分到 cpu 时间，能真正执行线程内代码的
+* 就绪态：有资格分到 cpu 时间，但还未轮到它的
+* 阻塞态：没资格分到 cpu 时间的
+  * 涵盖了 java 状态中提到的**阻塞**、**等待**、**有时限等待**
+  * 多出了阻塞 I/O，指线程在调用阻塞 I/O 时，实际活由 I/O 设备完成，此时线程无事可做，只能干等
+* 新建与终结态：与 java 中同名状态类似，不再啰嗦
+
+
+
+## 2. 线程池
+
+**要求**
+
+* 掌握线程池的 7 大核心参数
+
+**七大参数**
+
+1. corePoolSize 核心线程数目 - 池中会保留的最多线程数
+2. maximumPoolSize 最大线程数目 - 核心线程+救急线程的最大数目
+3. keepAliveTime 生存时间 - 救急线程的生存时间，生存时间内没有新任务，此线程资源会释放
+4. unit 时间单位 - 救急线程的生存时间单位，如秒、毫秒等
+5. workQueue - 当没有空闲核心线程时，新来任务会加入到此队列排队，队列满会创建救急线程执行任务
+6. threadFactory 线程工厂 - 可以定制线程对象的创建，例如设置线程名字、是否是守护线程等
+7. handler 拒绝策略 - 当所有线程都在繁忙，workQueue 也放满时，会触发拒绝策略
+   1. 抛异常 java.util.concurrent.ThreadPoolExecutor.AbortPolicy
+   2. 由调用者执行任务 java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy
+   3. 丢弃任务 java.util.concurrent.ThreadPoolExecutor.DiscardPolicy
+   4. 丢弃最早排队任务 java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy
+
+<img width='796' height='510' alt='Image' src='https://github.com/user-attachments/assets/c754e80d-e69b-4779-8229-946e188d87ed' />
+
+> ***代码说明***
+>
+> day02.TestThreadPoolExecutor 以较为形象的方式演示了线程池的核心组成
+
+
+
+## 3. wait vs sleep
+
+**要求**
+
+* 能够说出二者区别
+
+**一个共同点，三个不同点**
+
+共同点
+
+* wait() ，wait(long) 和 sleep(long) 的效果都是让当前线程暂时放弃 CPU 的使用权，进入阻塞状态
+
+不同点
+
+* 方法归属不同
+  * sleep(long) 是 Thread 的静态方法
+  * 而 wait()，wait(long) 都是 Object 的成员方法，每个对象都有
+
+* 醒来时机不同
+  * 执行 sleep(long) 和 wait(long) 的线程都会在等待相应毫秒后醒来
+  * wait(long) 和 wait() 还可以被 notify 唤醒，wait() 如果不唤醒就一直等下去
+  * 它们都可以被打断唤醒
+
+* 锁特性不同（重点）
+  * wait 方法的调用必须先获取 wait 对象的锁，而 sleep 则无此限制
+  * wait 方法执行后会释放对象锁，允许其它线程获得该对象锁（我放弃 cpu，但你们还可以用）
+  * 而 sleep 如果在 synchronized 代码块中执行，并不会释放对象锁（我放弃 cpu，你们也用不了）
+
+
+
+## 4. lock vs synchronized
+
+**要求**
+
+* 掌握 lock 与 synchronized 的区别
+* 理解 ReentrantLock 的公平、非公平锁
+* 理解 ReentrantLock 中的条件变量
+
+**三个层面**
+
+不同点
+
+* 语法层面
+  * synchronized 是关键字，源码在 jvm 中，用 c++ 语言实现
+  * Lock 是接口，源码由 jdk 提供，用 java 语言实现
+  * 使用 synchronized 时，退出同步代码块锁会自动释放，而使用 Lock 时，需要手动调用 unlock 方法释放锁
+* 功能层面
+  * 二者均属于悲观锁、都具备基本的互斥、同步、锁重入功能
+  * Lock 提供了许多 synchronized 不具备的功能，例如获取等待状态、公平锁、可打断、可超时、多条件变量
+  * Lock 有适合不同场景的实现，如 ReentrantLock， ReentrantReadWriteLock
+* 性能层面
+  * 在没有竞争时，synchronized 做了很多优化，如偏向锁、轻量级锁，性能不赖
+  * 在竞争激烈时，Lock 的实现通常会提供更好的性能
+
+**公平锁**
+
+* 公平锁的公平体现
+  * **已经处在阻塞队列**中的线程（不考虑超时）始终都是公平的，先进先出
+  * 公平锁是指**未处于阻塞队列**中的线程来争抢锁，如果队列不为空，则老实到队尾等待
+  * 非公平锁是指**未处于阻塞队列**中的线程来争抢锁，与队列头唤醒的线程去竞争，谁抢到算谁的
+* 公平锁会降低吞吐量，一般不用
+
+**条件变量**
+
+* ReentrantLock 中的条件变量功能类似于普通 synchronized 的 wait，notify，用在当线程获得锁后，发现条件不满足时，临时等待的链表结构
+* 与 synchronized 的等待集合不同之处在于，ReentrantLock 中的条件变量可以有多个，可以实现更精细的等待、唤醒控制
+
+> ***代码说明***
+>
+> * day02.TestReentrantLock 用较为形象的方式演示 ReentrantLock 的内部结构
+
+
+
+## 5. volatile
+
+**要求**
+
+* 掌握线程安全要考虑的三个问题
+* 掌握 volatile 能解决哪些问题
+
+**原子性**
+
+* 起因：多线程下，不同线程的**指令发生了交错**导致的共享变量的读写混乱
+* 解决：用悲观锁或乐观锁解决，volatile 并不能解决原子性
+
+**可见性**
+
+* 起因：由于**编译器优化、或缓存优化、或 CPU 指令重排序优化**导致的对共享变量所做的修改另外的线程看不到
+* 解决：用 volatile 修饰共享变量，能够防止编译器等优化发生，让一个线程对共享变量的修改对另一个线程可见
+
+**有序性**
+
+* 起因：由于**编译器优化、或缓存优化、或 CPU 指令重排序优化**导致指令的实际执行顺序与编写顺序不一致
+* 解决：用 volatile 修饰共享变量会在读、写共享变量时加入不同的屏障，阻止其他读写操作越过屏障，从而达到阻止重排序的效果
+* 注意：
+  * **volatile 变量写**加的屏障是阻止上方其它写操作越过屏障排到 **volatile 变量写**之下
+  * **volatile 变量读**加的屏障是阻止下方其它读操作越过屏障排到 **volatile 变量读**之上
+  * volatile 读写加入的屏障只能防止同一线程内的指令重排
+
+> ***代码说明***
+>
+> * day02.threadsafe.AddAndSubtract 演示原子性
+> * day02.threadsafe.ForeverLoop 演示可见性
+>   * 注意：本例经实践检验是编译器优化导致的可见性问题
+> * day02.threadsafe.Reordering 演示有序性
+>   * 需要打成 jar 包后测试
+> * 请同时参考视频讲解
+
+
+
+## 6. 悲观锁 vs 乐观锁
+
+**要求**
+
+* 掌握悲观锁和乐观锁的区别
+
+**对比悲观锁与乐观锁**
+
+* 悲观锁的代表是 synchronized 和 Lock 锁
+  * 其核心思想是【线程只有占有了锁，才能去操作共享变量，每次只有一个线程占锁成功，获取锁失败的线程，都得停下来等待】
+  * 线程从运行到阻塞、再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能
+  * 实际上，线程在获取 synchronized 和 Lock 锁时，如果锁已被占用，都会做几次重试操作，减少阻塞的机会
+
+* 乐观锁的代表是 AtomicInteger，使用 cas 来保证原子性
+  * 其核心思想是【无需加锁，每次只有一个线程能成功修改共享变量，其它失败的线程不需要停止，不断重试直至成功】
+  * 由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换
+  * 它需要多核 cpu 支持，且线程数不应超过 cpu 核数
+
+> ***代码说明***
+>
+> * day02.SyncVsCas 演示了分别使用乐观锁和悲观锁解决原子赋值
+> * 请同时参考视频讲解
+
+
+
+## 7. Hashtable vs ConcurrentHashMap
+
+**要求**
+
+* 掌握 Hashtable 与 ConcurrentHashMap 的区别
+* 掌握 ConcurrentHashMap 在不同版本的实现区别
+
+> 更形象的演示，见资料中的 hash-demo.jar，运行需要 jdk14 以上环境，进入 jar 包目录，执行下面命令
+>
+> ```
+> java -jar --add-exports java.base/jdk.internal.misc=ALL-UNNAMED hash-demo.jar
+> ```
+
+**Hashtable 对比 ConcurrentHashMap**
+
+* Hashtable 与 ConcurrentHashMap 都是线程安全的 Map 集合
+* Hashtable 并发度低，整个 Hashtable 对应一把锁，同一时刻，只能有一个线程操作它
+* ConcurrentHashMap 并发度高，整个 ConcurrentHashMap 对应多把锁，只要线程访问的是不同锁，那么不会冲突
+
+**ConcurrentHashMap 1.7**
+
+* 数据结构：`Segment(大数组) + HashEntry(小数组) + 链表`，每个 Segment 对应一把锁，如果多个线程访问不同的 Segment，则不会冲突
+* 并发度：Segment 数组大小即并发度，决定了同一时刻最多能有多少个线程并发访问。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://Eternal4869.github.io/post/Java%20-bing-fa.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/73345601?v=4">
+<title>Java 并发</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Java 并发</h1>
+<div class="title-right">
+    <a href="https://Eternal4869.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/13" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>并发篇</h1>
+<h2>1. 线程状态</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握 Java 线程六种状态</li>
+<li>掌握 Java 线程状态转换</li>
+<li>能理解五种状态与六种状态两种说法的区别</li>
+</ul>
+<p><strong>六种状态及转换</strong></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/24c54d67-f648-4a35-ba04-226470567f32"><img width="675" height="472" alt="Image" src="https://github.com/user-attachments/assets/24c54d67-f648-4a35-ba04-226470567f32" style="max-width: 100%; height: auto; max-height: 472px;; aspect-ratio: 675 / 472; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p>分别是</p>
+<ul>
+<li>新建
+<ul>
+<li>当一个线程对象被创建，但还未调用 start 方法时处于<strong>新建</strong>状态</li>
+<li>此时未与操作系统底层线程关联</li>
+</ul>
+</li>
+<li>可运行
+<ul>
+<li>调用了 start 方法，就会由<strong>新建</strong>进入<strong>可运行</strong></li>
+<li>此时与底层线程关联，由操作系统调度执行</li>
+</ul>
+</li>
+<li>终结
+<ul>
+<li>线程内代码已经执行完毕，由<strong>可运行</strong>进入<strong>终结</strong></li>
+<li>此时会取消与底层线程关联</li>
+</ul>
+</li>
+<li>阻塞
+<ul>
+<li>当获取锁失败后，由<strong>可运行</strong>进入 Monitor 的阻塞队列<strong>阻塞</strong>，此时不占用 cpu 时间</li>
+<li>当持锁线程释放锁时，会按照一定规则唤醒阻塞队列中的<strong>阻塞</strong>线程，唤醒后的线程进入<strong>可运行</strong>状态</li>
+</ul>
+</li>
+<li>等待
+<ul>
+<li>当获取锁成功后，但由于条件不满足，调用了 wait() 方法，此时从<strong>可运行</strong>状态释放锁进入 Monitor 等待集合<strong>等待</strong>，同样不占用 cpu 时间</li>
+<li>当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的<strong>等待</strong>线程，恢复为<strong>可运行</strong>状态</li>
+</ul>
+</li>
+<li>有时限等待
+<ul>
+<li>当获取锁成功后，但由于条件不满足，调用了 wait(long) 方法，此时从<strong>可运行</strong>状态释放锁进入 Monitor 等待集合进行<strong>有时限等待</strong>，同样不占用 cpu 时间</li>
+<li>当其它持锁线程调用 notify() 或 notifyAll() 方法，会按照一定规则唤醒等待集合中的<strong>有时限等待</strong>线程，恢复为<strong>可运行</strong>状态，并重新去竞争锁</li>
+<li>如果等待超时，也会从<strong>有时限等待</strong>状态恢复为<strong>可运行</strong>状态，并重新去竞争锁</li>
+<li>还有一种情况是调用 sleep(long) 方法也会从<strong>可运行</strong>状态进入<strong>有时限等待</strong>状态，但与 Monitor 无关，不需要主动唤醒，超时时间到自然恢复为<strong>可运行</strong>状态</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><em><strong>其它情况（只需了解）</strong></em></p>
+<ul>
+<li>可以用 interrupt() 方法打断<strong>等待</strong>、<strong>有时限等待</strong>的线程，让它们恢复为<strong>可运行</strong>状态</li>
+<li>park，unpark 等方法也可以让线程等待和唤醒</li>
+</ul>
+</blockquote>
+<p><strong>五种状态</strong></p>
+<p>五种状态的说法来自于操作系统层面的划分</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee958dde-b10b-4ff3-90a6-d6bc35889090"><img width="679" height="479" alt="Image" src="https://github.com/user-attachments/assets/ee958dde-b10b-4ff3-90a6-d6bc35889090" style="max-width: 100%; height: auto; max-height: 479px;; aspect-ratio: 679 / 479; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<ul>
+<li>运行态：分到 cpu 时间，能真正执行线程内代码的</li>
+<li>就绪态：有资格分到 cpu 时间，但还未轮到它的</li>
+<li>阻塞态：没资格分到 cpu 时间的
+<ul>
+<li>涵盖了 java 状态中提到的<strong>阻塞</strong>、<strong>等待</strong>、<strong>有时限等待</strong></li>
+<li>多出了阻塞 I/O，指线程在调用阻塞 I/O 时，实际活由 I/O 设备完成，此时线程无事可做，只能干等</li>
+</ul>
+</li>
+<li>新建与终结态：与 java 中同名状态类似，不再啰嗦</li>
+</ul>
+<h2>2. 线程池</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握线程池的 7 大核心参数</li>
+</ul>
+<p><strong>七大参数</strong></p>
+<ol>
+<li>corePoolSize 核心线程数目 - 池中会保留的最多线程数</li>
+<li>maximumPoolSize 最大线程数目 - 核心线程+救急线程的最大数目</li>
+<li>keepAliveTime 生存时间 - 救急线程的生存时间，生存时间内没有新任务，此线程资源会释放</li>
+<li>unit 时间单位 - 救急线程的生存时间单位，如秒、毫秒等</li>
+<li>workQueue - 当没有空闲核心线程时，新来任务会加入到此队列排队，队列满会创建救急线程执行任务</li>
+<li>threadFactory 线程工厂 - 可以定制线程对象的创建，例如设置线程名字、是否是守护线程等</li>
+<li>handler 拒绝策略 - 当所有线程都在繁忙，workQueue 也放满时，会触发拒绝策略
+<ol>
+<li>抛异常 java.util.concurrent.ThreadPoolExecutor.AbortPolicy</li>
+<li>由调用者执行任务 java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy</li>
+<li>丢弃任务 java.util.concurrent.ThreadPoolExecutor.DiscardPolicy</li>
+<li>丢弃最早排队任务 java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy</li>
+</ol>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c754e80d-e69b-4779-8229-946e188d87ed"><img width="796" height="510" alt="Image" src="https://github.com/user-attachments/assets/c754e80d-e69b-4779-8229-946e188d87ed" style="max-width: 100%; height: auto; max-height: 510px;; aspect-ratio: 796 / 510; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<blockquote>
+<p><em><strong>代码说明</strong></em></p>
+<p>day02.TestThreadPoolExecutor 以较为形象的方式演示了线程池的核心组成</p>
+</blockquote>
+<h2>3. wait vs sleep</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>能够说出二者区别</li>
+</ul>
+<p><strong>一个共同点，三个不同点</strong></p>
+<p>共同点</p>
+<ul>
+<li>wait() ，wait(long) 和 sleep(long) 的效果都是让当前线程暂时放弃 CPU 的使用权，进入阻塞状态</li>
+</ul>
+<p>不同点</p>
+<ul>
+<li>
+<p>方法归属不同</p>
+<ul>
+<li>sleep(long) 是 Thread 的静态方法</li>
+<li>而 wait()，wait(long) 都是 Object 的成员方法，每个对象都有</li>
+</ul>
+</li>
+<li>
+<p>醒来时机不同</p>
+<ul>
+<li>执行 sleep(long) 和 wait(long) 的线程都会在等待相应毫秒后醒来</li>
+<li>wait(long) 和 wait() 还可以被 notify 唤醒，wait() 如果不唤醒就一直等下去</li>
+<li>它们都可以被打断唤醒</li>
+</ul>
+</li>
+<li>
+<p>锁特性不同（重点）</p>
+<ul>
+<li>wait 方法的调用必须先获取 wait 对象的锁，而 sleep 则无此限制</li>
+<li>wait 方法执行后会释放对象锁，允许其它线程获得该对象锁（我放弃 cpu，但你们还可以用）</li>
+<li>而 sleep 如果在 synchronized 代码块中执行，并不会释放对象锁（我放弃 cpu，你们也用不了）</li>
+</ul>
+</li>
+</ul>
+<h2>4. lock vs synchronized</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握 lock 与 synchronized 的区别</li>
+<li>理解 ReentrantLock 的公平、非公平锁</li>
+<li>理解 ReentrantLock 中的条件变量</li>
+</ul>
+<p><strong>三个层面</strong></p>
+<p>不同点</p>
+<ul>
+<li>语法层面
+<ul>
+<li>synchronized 是关键字，源码在 jvm 中，用 c++ 语言实现</li>
+<li>Lock 是接口，源码由 jdk 提供，用 java 语言实现</li>
+<li>使用 synchronized 时，退出同步代码块锁会自动释放，而使用 Lock 时，需要手动调用 unlock 方法释放锁</li>
+</ul>
+</li>
+<li>功能层面
+<ul>
+<li>二者均属于悲观锁、都具备基本的互斥、同步、锁重入功能</li>
+<li>Lock 提供了许多 synchronized 不具备的功能，例如获取等待状态、公平锁、可打断、可超时、多条件变量</li>
+<li>Lock 有适合不同场景的实现，如 ReentrantLock， ReentrantReadWriteLock</li>
+</ul>
+</li>
+<li>性能层面
+<ul>
+<li>在没有竞争时，synchronized 做了很多优化，如偏向锁、轻量级锁，性能不赖</li>
+<li>在竞争激烈时，Lock 的实现通常会提供更好的性能</li>
+</ul>
+</li>
+</ul>
+<p><strong>公平锁</strong></p>
+<ul>
+<li>公平锁的公平体现
+<ul>
+<li><strong>已经处在阻塞队列</strong>中的线程（不考虑超时）始终都是公平的，先进先出</li>
+<li>公平锁是指<strong>未处于阻塞队列</strong>中的线程来争抢锁，如果队列不为空，则老实到队尾等待</li>
+<li>非公平锁是指<strong>未处于阻塞队列</strong>中的线程来争抢锁，与队列头唤醒的线程去竞争，谁抢到算谁的</li>
+</ul>
+</li>
+<li>公平锁会降低吞吐量，一般不用</li>
+</ul>
+<p><strong>条件变量</strong></p>
+<ul>
+<li>ReentrantLock 中的条件变量功能类似于普通 synchronized 的 wait，notify，用在当线程获得锁后，发现条件不满足时，临时等待的链表结构</li>
+<li>与 synchronized 的等待集合不同之处在于，ReentrantLock 中的条件变量可以有多个，可以实现更精细的等待、唤醒控制</li>
+</ul>
+<blockquote>
+<p><em><strong>代码说明</strong></em></p>
+<ul>
+<li>day02.TestReentrantLock 用较为形象的方式演示 ReentrantLock 的内部结构</li>
+</ul>
+</blockquote>
+<h2>5. volatile</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握线程安全要考虑的三个问题</li>
+<li>掌握 volatile 能解决哪些问题</li>
+</ul>
+<p><strong>原子性</strong></p>
+<ul>
+<li>起因：多线程下，不同线程的<strong>指令发生了交错</strong>导致的共享变量的读写混乱</li>
+<li>解决：用悲观锁或乐观锁解决，volatile 并不能解决原子性</li>
+</ul>
+<p><strong>可见性</strong></p>
+<ul>
+<li>起因：由于<strong>编译器优化、或缓存优化、或 CPU 指令重排序优化</strong>导致的对共享变量所做的修改另外的线程看不到</li>
+<li>解决：用 volatile 修饰共享变量，能够防止编译器等优化发生，让一个线程对共享变量的修改对另一个线程可见</li>
+</ul>
+<p><strong>有序性</strong></p>
+<ul>
+<li>起因：由于<strong>编译器优化、或缓存优化、或 CPU 指令重排序优化</strong>导致指令的实际执行顺序与编写顺序不一致</li>
+<li>解决：用 volatile 修饰共享变量会在读、写共享变量时加入不同的屏障，阻止其他读写操作越过屏障，从而达到阻止重排序的效果</li>
+<li>注意：
+<ul>
+<li><strong>volatile 变量写</strong>加的屏障是阻止上方其它写操作越过屏障排到 <strong>volatile 变量写</strong>之下</li>
+<li><strong>volatile 变量读</strong>加的屏障是阻止下方其它读操作越过屏障排到 <strong>volatile 变量读</strong>之上</li>
+<li>volatile 读写加入的屏障只能防止同一线程内的指令重排</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><em><strong>代码说明</strong></em></p>
+<ul>
+<li>day02.threadsafe.AddAndSubtract 演示原子性</li>
+<li>day02.threadsafe.ForeverLoop 演示可见性
+<ul>
+<li>注意：本例经实践检验是编译器优化导致的可见性问题</li>
+</ul>
+</li>
+<li>day02.threadsafe.Reordering 演示有序性
+<ul>
+<li>需要打成 jar 包后测试</li>
+</ul>
+</li>
+<li>请同时参考视频讲解</li>
+</ul>
+</blockquote>
+<h2>6. 悲观锁 vs 乐观锁</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握悲观锁和乐观锁的区别</li>
+</ul>
+<p><strong>对比悲观锁与乐观锁</strong></p>
+<ul>
+<li>
+<p>悲观锁的代表是 synchronized 和 Lock 锁</p>
+<ul>
+<li>其核心思想是【线程只有占有了锁，才能去操作共享变量，每次只有一个线程占锁成功，获取锁失败的线程，都得停下来等待】</li>
+<li>线程从运行到阻塞、再从阻塞到唤醒，涉及线程上下文切换，如果频繁发生，影响性能</li>
+<li>实际上，线程在获取 synchronized 和 Lock 锁时，如果锁已被占用，都会做几次重试操作，减少阻塞的机会</li>
+</ul>
+</li>
+<li>
+<p>乐观锁的代表是 AtomicInteger，使用 cas 来保证原子性</p>
+<ul>
+<li>其核心思想是【无需加锁，每次只有一个线程能成功修改共享变量，其它失败的线程不需要停止，不断重试直至成功】</li>
+<li>由于线程一直运行，不需要阻塞，因此不涉及线程上下文切换</li>
+<li>它需要多核 cpu 支持，且线程数不应超过 cpu 核数</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><em><strong>代码说明</strong></em></p>
+<ul>
+<li>day02.SyncVsCas 演示了分别使用乐观锁和悲观锁解决原子赋值</li>
+<li>请同时参考视频讲解</li>
+</ul>
+</blockquote>
+<h2>7. Hashtable vs ConcurrentHashMap</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握 Hashtable 与 ConcurrentHashMap 的区别</li>
+<li>掌握 ConcurrentHashMap 在不同版本的实现区别</li>
+</ul>
+<blockquote>
+<p>更形象的演示，见资料中的 hash-demo.jar，运行需要 jdk14 以上环境，进入 jar 包目录，执行下面命令</p>
+<pre class="notranslate"><code class="notranslate">java -jar --add-exports java.base/jdk.internal.misc=ALL-UNNAMED hash-demo.jar
+</code></pre>
+</blockquote>
+<p><strong>Hashtable 对比 ConcurrentHashMap</strong></p>
+<ul>
+<li>Hashtable 与 ConcurrentHashMap 都是线程安全的 Map 集合</li>
+<li>Hashtable 并发度低，整个 Hashtable 对应一把锁，同一时刻，只能有一个线程操作它</li>
+<li>ConcurrentHashMap 并发度高，整个 ConcurrentHashMap 对应多把锁，只要线程访问的是不同锁，那么不会冲突</li>
+</ul>
+<p><strong>ConcurrentHashMap 1.7</strong></p>
+<ul>
+<li>数据结构：<code class="notranslate">Segment(大数组) + HashEntry(小数组) + 链表</code>，每个 Segment 对应一把锁，如果多个线程访问不同的 Segment，则不会冲突</li>
+<li>并发度：Segment 数组大小即并发度，决定了同一时刻最多能有多少个线程并发访问。Segment 数组不能扩容，意味着并发度在 ConcurrentHashMap 创建时就固定了</li>
+<li>索引计算
+<ul>
+<li>假设大数组长度是 $2^m$，key 在大数组内的索引是 key 的二次 hash 值的高 m 位</li>
+<li>假设小数组长度是 $2^n$，key 在小数组内的索引是 key 的二次 hash 值的低 n 位</li>
+</ul>
+</li>
+<li>扩容：每个小数组的扩容相对独立，小数组在超过扩容因子时会触发扩容，每次扩容翻倍</li>
+<li>Segment[0] 原型：首次创建其它小数组时，会以此原型为依据，数组长度，扩容因子都会以原型为准</li>
+</ul>
+<p><strong>ConcurrentHashMap 1.8</strong></p>
+<ul>
+<li>数据结构：<code class="notranslate">Node 数组 + 链表或红黑树</code>，数组的每个头节点作为锁，如果多个线程访问的头节点不同，则不会冲突。首次生成头节点时如果发生竞争，利用 cas 而非 syncronized，进一步提升性能</li>
+<li>并发度：Node 数组有多大，并发度就有多大，与 1.7 不同，Node 数组可以扩容</li>
+<li>扩容条件：Node 数组满 3/4 时就会扩容</li>
+<li>扩容单位：以链表为单位从后向前迁移链表，迁移完成的将旧数组头节点替换为 ForwardingNode</li>
+<li>扩容时并发 get
+<ul>
+<li>根据是否为 ForwardingNode 来决定是在新数组查找还是在旧数组查找，不会阻塞</li>
+<li>如果链表长度超过 1，则需要对节点进行复制（创建新节点），怕的是节点迁移后 next 指针改变</li>
+<li>如果链表最后几个元素扩容后索引不变，则节点无需复制</li>
+</ul>
+</li>
+<li>扩容时并发 put
+<ul>
+<li>如果 put 的线程与扩容线程操作的链表是同一个，put 线程会阻塞</li>
+<li>如果 put 的线程操作的链表还未迁移完成，即头节点不是 ForwardingNode，则可以并发执行</li>
+<li>如果 put 的线程操作的链表已经迁移完成，即头结点是 ForwardingNode，则可以协助扩容</li>
+</ul>
+</li>
+<li>与 1.7 相比是懒惰初始化</li>
+<li>capacity 代表预估的元素个数，capacity / factory 来计算出初始数组大小，需要贴近 $2^n$
+</li>
+<li>loadFactor 只在计算初始数组大小时被使用，之后扩容固定为 3/4</li>
+<li>超过树化阈值时的扩容问题，如果容量已经是 64，直接树化，否则在原来容量基础上做 3 轮扩容</li>
+</ul>
+<h2>8. ThreadLocal</h2>
+<p><strong>要求</strong></p>
+<ul>
+<li>掌握 ThreadLocal 的作用与原理</li>
+<li>掌握 ThreadLocal 的内存释放时机</li>
+</ul>
+<p><strong>作用</strong></p>
+<ul>
+<li>ThreadLocal 可以实现【资源对象】的线程隔离，让每个线程各用各的【资源对象】，避免争用引发的线程安全问题</li>
+<li>ThreadLocal 同时实现了线程内的资源共享</li>
+</ul>
+<p><strong>原理</strong></p>
+<p>每个线程内有一个 ThreadLocalMap 类型的成员变量，用来存储资源对象</p>
+<ul>
+<li>调用 set 方法，就是以 ThreadLocal 自己作为 key，资源对象作为 value，放入当前线程的 ThreadLocalMap 集合中</li>
+<li>调用 get 方法，就是以 ThreadLocal 自己作为 key，到当前线程中查找关联的资源值</li>
+<li>调用 remove 方法，就是以 ThreadLocal 自己作为 key，移除当前线程关联的资源值</li>
+</ul>
+<p>ThreadLocalMap 的一些特点</p>
+<ul>
+<li>key 的 hash 值统一分配</li>
+<li>初始容量 16，扩容因子 2/3，扩容容量翻倍</li>
+<li>key 索引冲突后用开放寻址法解决冲突</li>
+</ul>
+<p><strong>弱引用 key</strong></p>
+<p>ThreadLocalMap 中的 key 被设计为弱引用，原因如下</p>
+<ul>
+<li>Thread 可能需要长时间运行（如线程池中的线程），如果 key 不再使用，需要在内存不足（GC）时释放其占用的内存</li>
+</ul>
+<p><strong>内存释放时机</strong></p>
+<ul>
+<li>被动 GC 释放 key
+<ul>
+<li>仅是让 key 的内存释放，关联 value 的内存并不会释放</li>
+</ul>
+</li>
+<li>懒惰被动释放 value
+<ul>
+<li>get key 时，发现是 null key，则释放其 value 内存</li>
+<li>set key 时，会使用启发式扫描，清除临近的 null key 的 value 内存，启发次数与元素个数，是否发现 null key 有关</li>
+</ul>
+</li>
+<li>主动 remove 释放 key，value
+<ul>
+<li>会同时释放 key，value 的内存，也会清除临近的 null key 的 value 内存</li>
+<li>推荐使用它，因为一般使用 ThreadLocal 时都把它作为静态变量（即强引用），因此无法被动依靠 GC 回收</li>
+</ul>
+</li>
+</ul></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://Eternal4869.github.io">学习日记</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Eternal4869/Eternal4869.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
