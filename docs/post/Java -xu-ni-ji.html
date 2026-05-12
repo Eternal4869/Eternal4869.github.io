@@ -243,7 +243,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>尤其要知道方法区、永久代、元空间的关系</li>
 </ul>
 <p><strong>结合一段 java 代码的执行理解内存划分</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/70ee2bb3-6258-40c0-b5f7-e4b4e7ed671c"><img width="960" height="391" alt="Image" src="https://github.com/user-attachments/assets/70ee2bb3-6258-40c0-b5f7-e4b4e7ed671c" style="max-width: 100%; height: auto; max-height: 391px;; aspect-ratio: 960 / 391; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/70ee2bb3-6258-40c0-b5f7-e4b4e7ed671c"><img width="960" height="391" alt="Image" src="https://github.com/user-attachments/assets/70ee2bb3-6258-40c0-b5f7-e4b4e7ed671c" style="max-width: 100%; height: auto; max-height: 391px;; aspect-ratio: 960 / 391; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ul>
 <li>执行 javac 命令编译源代码为字节码</li>
 <li>执行 java 命令
@@ -288,14 +288,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li><strong>永久代</strong>是 Hotspot 虚拟机对 JVM 规范的实现（1.8 之前）</li>
 <li><strong>元空间</strong>是 Hotspot 虚拟机对 JVM 规范的另一种实现（1.8 以后），使用本地内存作为这些信息的存储空间</li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/67c4abec-b405-4418-8689-ef50565ec62e"><img width="805" height="381" alt="Image" src="https://github.com/user-attachments/assets/67c4abec-b405-4418-8689-ef50565ec62e" style="max-width: 100%; height: auto; max-height: 381px;; aspect-ratio: 805 / 381; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/67c4abec-b405-4418-8689-ef50565ec62e"><img width="805" height="381" alt="Image" src="https://github.com/user-attachments/assets/67c4abec-b405-4418-8689-ef50565ec62e" style="max-width: 100%; height: auto; max-height: 381px;; aspect-ratio: 805 / 381; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>从这张图学到三点</p>
 <ul>
 <li>当第一次用到某个类是，由类加载器将 class 文件的类元信息读入，并存储于元空间</li>
 <li>X，Y 的类元信息是存储于元空间中，无法直接访问</li>
 <li>可以用 X.class，Y.class 间接访问类元信息，它们俩属于 java 对象，我们的代码中可以使用</li>
 </ul>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4bb4b911-69d9-4041-af9e-9c6613301354"><img width="829" height="602" alt="Image" src="https://github.com/user-attachments/assets/4bb4b911-69d9-4041-af9e-9c6613301354" style="max-width: 100%; height: auto; max-height: 602px;; aspect-ratio: 829 / 602; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4bb4b911-69d9-4041-af9e-9c6613301354"><img width="829" height="602" alt="Image" src="https://github.com/user-attachments/assets/4bb4b911-69d9-4041-af9e-9c6613301354" style="max-width: 100%; height: auto; max-height: 602px;; aspect-ratio: 829 / 602; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>从这张图可以学到</p>
 <ul>
 <li>堆内存中：当一个<strong>类加载器对象</strong>，这个类加载器对象加载的所有<strong>类对象</strong>，这些类对象对应的所有<strong>实例对象</strong>都没人引用时，GC 时就会对它们占用的对内存进行释放</li>
@@ -307,7 +307,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>熟悉常见的 JVM 参数，尤其和大小相关的</li>
 </ul>
 <p><strong>堆内存，按大小设置</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/54e7c404-cef6-4eda-95a0-ee794a2aab22"><img width="727" height="359" alt="Image" src="https://github.com/user-attachments/assets/54e7c404-cef6-4eda-95a0-ee794a2aab22" style="max-width: 100%; height: auto; max-height: 359px;; aspect-ratio: 727 / 359; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/54e7c404-cef6-4eda-95a0-ee794a2aab22"><img width="727" height="359" alt="Image" src="https://github.com/user-attachments/assets/54e7c404-cef6-4eda-95a0-ee794a2aab22" style="max-width: 100%; height: auto; max-height: 359px;; aspect-ratio: 727 / 359; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ul>
 <li>-Xms 最小堆内存（包括新生代和老年代）</li>
@@ -318,14 +318,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>保留是指，一开始不会占用那么多内存，随着使用内存越来越多，会逐步使用这部分保留内存。下同</li>
 </ul>
 <p><strong>堆内存，按比例设置</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8966d8f0-6929-4d54-a49a-2ed5fcda1a72"><img width="936" height="305" alt="Image" src="https://github.com/user-attachments/assets/8966d8f0-6929-4d54-a49a-2ed5fcda1a72" style="max-width: 100%; height: auto; max-height: 305px;; aspect-ratio: 936 / 305; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8966d8f0-6929-4d54-a49a-2ed5fcda1a72"><img width="936" height="305" alt="Image" src="https://github.com/user-attachments/assets/8966d8f0-6929-4d54-a49a-2ed5fcda1a72" style="max-width: 100%; height: auto; max-height: 305px;; aspect-ratio: 936 / 305; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ul>
 <li>-XX:NewRatio=2:1 表示老年代占两份，新生代占一份</li>
 <li>-XX:SurvivorRatio=4:1 表示新生代分成六份，伊甸园占四份，from 和 to 各占一份</li>
 </ul>
 <p><strong>元空间内存设置</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f1cc4a6b-9f56-4249-ad7b-a2b651e5333a"><img width="559" height="206" alt="Image" src="https://github.com/user-attachments/assets/f1cc4a6b-9f56-4249-ad7b-a2b651e5333a" style="max-width: 100%; height: auto; max-height: 206px;; aspect-ratio: 559 / 206; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f1cc4a6b-9f56-4249-ad7b-a2b651e5333a"><img width="559" height="206" alt="Image" src="https://github.com/user-attachments/assets/f1cc4a6b-9f56-4249-ad7b-a2b651e5333a" style="max-width: 100%; height: auto; max-height: 206px;; aspect-ratio: 559 / 206; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ul>
 <li>class space 存储类的基本信息，最大值受 -XX:CompressedClassSpaceSize 控制</li>
@@ -337,7 +337,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>这里 -XX:CompressedClassSpaceSize 这段空间还与是否开启了指针压缩有关，这里暂不深入展开，可以简单认为指针压缩默认开启</li>
 </ul>
 <p><strong>代码缓存内存设置</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9f42b1b1-91f7-49c8-b278-758d783499ab"><img width="557" height="275" alt="Image" src="https://github.com/user-attachments/assets/9f42b1b1-91f7-49c8-b278-758d783499ab" style="max-width: 100%; height: auto; max-height: 275px;; aspect-ratio: 557 / 275; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9f42b1b1-91f7-49c8-b278-758d783499ab"><img width="557" height="275" alt="Image" src="https://github.com/user-attachments/assets/9f42b1b1-91f7-49c8-b278-758d783499ab" style="max-width: 100%; height: auto; max-height: 275px;; aspect-ratio: 557 / 275; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ul>
 <li>如果 -XX:ReservedCodeCacheSize &lt; 240m，所有优化机器代码不加区分存在一起</li>
@@ -350,7 +350,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </li>
 </ul>
 <p><strong>线程内存设置</strong></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d154e423-653b-400e-8104-bba3e470c0ab"><img width="284" height="346" alt="Image" src="https://github.com/user-attachments/assets/d154e423-653b-400e-8104-bba3e470c0ab" style="max-width: 100%; height: auto; max-height: 346px;; aspect-ratio: 284 / 346; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d154e423-653b-400e-8104-bba3e470c0ab"><img width="284" height="346" alt="Image" src="https://github.com/user-attachments/assets/d154e423-653b-400e-8104-bba3e470c0ab" style="max-width: 100%; height: auto; max-height: 346px;; aspect-ratio: 284 / 346; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <blockquote>
 <p><em><strong>官方参考文档</strong></em></p>
 <ul>
@@ -367,7 +367,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 <p><strong>三种垃圾回收算法</strong></p>
 <p>标记清除法</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5e2566a6-9ffd-41f7-aa2b-d25caec81080"><img width="590" height="415" alt="Image" src="https://github.com/user-attachments/assets/5e2566a6-9ffd-41f7-aa2b-d25caec81080" style="max-width: 100%; height: auto; max-height: 415px;; aspect-ratio: 590 / 415; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5e2566a6-9ffd-41f7-aa2b-d25caec81080"><img width="590" height="415" alt="Image" src="https://github.com/user-attachments/assets/5e2566a6-9ffd-41f7-aa2b-d25caec81080" style="max-width: 100%; height: auto; max-height: 415px;; aspect-ratio: 590 / 415; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ol>
 <li>找到 GC Root 对象，即那些一定不会被回收的对象，如正执行方法内局部变量引用的对象、静态变量引用的对象</li>
@@ -381,7 +381,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>缺点是会产生内存碎片</li>
 </ul>
 <p>标记整理法</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5c03f728-3e9e-40d4-ab44-c4eca59fb961"><img width="833" height="440" alt="Image" src="https://github.com/user-attachments/assets/5c03f728-3e9e-40d4-ab44-c4eca59fb961" style="max-width: 100%; height: auto; max-height: 440px;; aspect-ratio: 833 / 440; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5c03f728-3e9e-40d4-ab44-c4eca59fb961"><img width="833" height="440" alt="Image" src="https://github.com/user-attachments/assets/5c03f728-3e9e-40d4-ab44-c4eca59fb961" style="max-width: 100%; height: auto; max-height: 440px;; aspect-ratio: 833 / 440; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ol>
 <li>前面的标记阶段、清理阶段与标记清除法类似</li>
@@ -400,7 +400,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </li>
 </ul>
 <p>标记复制法</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9c8cdc2f-3d09-49bd-ae85-d090ab0b63df"><img width="851" height="333" alt="Image" src="https://github.com/user-attachments/assets/9c8cdc2f-3d09-49bd-ae85-d090ab0b63df" style="max-width: 100%; height: auto; max-height: 333px;; aspect-ratio: 851 / 333; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9c8cdc2f-3d09-49bd-ae85-d090ab0b63df"><img width="851" height="333" alt="Image" src="https://github.com/user-attachments/assets/9c8cdc2f-3d09-49bd-ae85-d090ab0b63df" style="max-width: 100%; height: auto; max-height: 333px;; aspect-ratio: 851 / 333; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>解释：</p>
 <ol>
 <li>将整个内存分成两个大小相等的区域，from 和 to，其中 to 总是处于空闲，from 存储新创建的对象</li>
@@ -432,39 +432,39 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ol>
 <li>伊甸园 eden，最初对象都分配到这里，与幸存区 survivor（分成 from 和 to）合称新生代，</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/dbdaaac8-c83b-4f2a-b12e-cc5c269798db"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/dbdaaac8-c83b-4f2a-b12e-cc5c269798db" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/dbdaaac8-c83b-4f2a-b12e-cc5c269798db"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/dbdaaac8-c83b-4f2a-b12e-cc5c269798db" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="2">
 <li>当伊甸园内存不足，标记伊甸园与 from（现阶段没有）的存活对象</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b3a95593-e79f-479c-b0e1-9e6ba56ef29a"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/b3a95593-e79f-479c-b0e1-9e6ba56ef29a" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b3a95593-e79f-479c-b0e1-9e6ba56ef29a"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/b3a95593-e79f-479c-b0e1-9e6ba56ef29a" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>将存活对象采用复制算法复制到 to 中，复制完毕后，伊甸园和 from 内存都得到释放</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/47a5b9ad-ec9e-4807-88d4-bf5a7310f7b6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/47a5b9ad-ec9e-4807-88d4-bf5a7310f7b6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/47a5b9ad-ec9e-4807-88d4-bf5a7310f7b6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/47a5b9ad-ec9e-4807-88d4-bf5a7310f7b6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="4">
 <li>将 from 和 to 交换位置</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/84bd1c84-8d98-46ec-86db-4109b27097f6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/84bd1c84-8d98-46ec-86db-4109b27097f6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/84bd1c84-8d98-46ec-86db-4109b27097f6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/84bd1c84-8d98-46ec-86db-4109b27097f6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="5">
 <li>经过一段时间后伊甸园的内存又出现不足</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fda25467-4f09-4167-be37-c2cf748f342e"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/fda25467-4f09-4167-be37-c2cf748f342e" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fda25467-4f09-4167-be37-c2cf748f342e"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/fda25467-4f09-4167-be37-c2cf748f342e" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="6">
 <li>标记伊甸园与 from（现阶段没有）的存活对象</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/496360b6-9783-42a5-ba8c-d10e434fe92c"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/496360b6-9783-42a5-ba8c-d10e434fe92c" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/496360b6-9783-42a5-ba8c-d10e434fe92c"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/496360b6-9783-42a5-ba8c-d10e434fe92c" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="7">
 <li>将存活对象采用复制算法复制到 to 中</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/baa40003-e634-431d-9cda-e120f4abad7b"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/baa40003-e634-431d-9cda-e120f4abad7b" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/baa40003-e634-431d-9cda-e120f4abad7b"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/baa40003-e634-431d-9cda-e120f4abad7b" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="8">
 <li>复制完毕后，伊甸园和 from 内存都得到释放</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/00bcddb7-98e4-4c8d-8bd0-82437823103c"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/00bcddb7-98e4-4c8d-8bd0-82437823103c" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/00bcddb7-98e4-4c8d-8bd0-82437823103c"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/00bcddb7-98e4-4c8d-8bd0-82437823103c" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="9">
 <li>将 from 和 to 交换位置</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6ee05824-bbb1-40bc-9acf-96e775047ba6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/6ee05824-bbb1-40bc-9acf-96e775047ba6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6ee05824-bbb1-40bc-9acf-96e775047ba6"><img width="1308" height="322" alt="Image" src="https://github.com/user-attachments/assets/6ee05824-bbb1-40bc-9acf-96e775047ba6" style="max-width: 100%; height: auto; max-height: 322px;; aspect-ratio: 1308 / 322; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="10">
 <li>老年代 old，当幸存区对象熬过几次回收（最多15次），晋升到老年代（幸存区内存不足或大对象会导致提前晋升）</li>
 </ol>
@@ -490,41 +490,41 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ol>
 <li>起始的三个对象还未处理完成，用灰色表示</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/464f2840-df3e-4588-9d54-979229cf5b2a"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/464f2840-df3e-4588-9d54-979229cf5b2a" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/464f2840-df3e-4588-9d54-979229cf5b2a"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/464f2840-df3e-4588-9d54-979229cf5b2a" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="2">
 <li>该对象的引用已经处理完成，用黑色表示，黑色引用的对象变为灰色</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8f053d88-b147-46c6-b434-732dd24a877f"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/8f053d88-b147-46c6-b434-732dd24a877f" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8f053d88-b147-46c6-b434-732dd24a877f"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/8f053d88-b147-46c6-b434-732dd24a877f" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>依次类推</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9235da8f-e323-44f4-b6d3-50120bfb4b48"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/9235da8f-e323-44f4-b6d3-50120bfb4b48" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9235da8f-e323-44f4-b6d3-50120bfb4b48"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/9235da8f-e323-44f4-b6d3-50120bfb4b48" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="4">
 <li>沿着引用链都标记了一遍</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0484c7d6-5d16-4d2c-a49c-5118e81cd645"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0484c7d6-5d16-4d2c-a49c-5118e81cd645" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0484c7d6-5d16-4d2c-a49c-5118e81cd645"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0484c7d6-5d16-4d2c-a49c-5118e81cd645" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="5">
 <li>最后为标记的白色对象，即为垃圾</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0324c9ce-d680-414b-aedd-816d9884d797"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0324c9ce-d680-414b-aedd-816d9884d797" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0324c9ce-d680-414b-aedd-816d9884d797"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0324c9ce-d680-414b-aedd-816d9884d797" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p><strong>并发漏标问题</strong></p>
 <p>比较先进的垃圾回收器都支持<strong>并发标记</strong>，即在标记过程中，用户线程仍然能工作。但这样带来一个新的问题，如果用户线程修改了对象引用，那么就存在漏标问题。例如：</p>
 <ol>
 <li>如图所示标记工作尚未完成</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c0200aaf-348f-4c1e-8aaa-056b5b957660"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/c0200aaf-348f-4c1e-8aaa-056b5b957660" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c0200aaf-348f-4c1e-8aaa-056b5b957660"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/c0200aaf-348f-4c1e-8aaa-056b5b957660" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="2">
 <li>用户线程同时在工作，断开了第一层 3、4 两个对象之间的引用，这时对于正在处理 3 号对象的垃圾回收线程来讲，它会将 4 号对象当做是白色垃圾</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b732cc78-b477-4997-bdb5-b39858721eb2"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/b732cc78-b477-4997-bdb5-b39858721eb2" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/b732cc78-b477-4997-bdb5-b39858721eb2"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/b732cc78-b477-4997-bdb5-b39858721eb2" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>但如果其他用户线程又建立了 2、4 两个对象的引用，这时因为 2 号对象是黑色已处理对象了，因此垃圾回收线程不会察觉到这个引用关系的变化，从而产生了漏标</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0e1d9059-0825-4e1a-a65e-e2f635847fbb"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0e1d9059-0825-4e1a-a65e-e2f635847fbb" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0e1d9059-0825-4e1a-a65e-e2f635847fbb"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/0e1d9059-0825-4e1a-a65e-e2f635847fbb" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="4">
 <li>如果用户线程让黑色对象引用了一个新增对象，一样会存在漏标问题</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e3904435-cd4c-4886-95dd-dae60272fad8"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/e3904435-cd4c-4886-95dd-dae60272fad8" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e3904435-cd4c-4886-95dd-dae60272fad8"><img width="677" height="711" alt="Image" src="https://github.com/user-attachments/assets/e3904435-cd4c-4886-95dd-dae60272fad8" style="max-width: 100%; height: auto; max-height: 711px;; aspect-ratio: 677 / 711; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>因此对于<strong>并发标记</strong>而言，必须解决漏标问题，也就是要记录标记过程中的变化。有两种解决方法：</p>
 <ol>
 <li>Incremental Update 增量更新法，CMS 垃圾回收器采用
@@ -579,52 +579,52 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ol>
 <li>初始时，所有区域都处于空闲状态</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e64bff0f-01d9-4002-98e2-81372db70a50"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/e64bff0f-01d9-4002-98e2-81372db70a50" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e64bff0f-01d9-4002-98e2-81372db70a50"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/e64bff0f-01d9-4002-98e2-81372db70a50" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="2">
 <li>创建了一些对象，挑出一些空闲区域作为伊甸园区存储这些对象</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/55a99eb1-ef34-4fee-87f1-6efb148b0b41"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/55a99eb1-ef34-4fee-87f1-6efb148b0b41" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/55a99eb1-ef34-4fee-87f1-6efb148b0b41"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/55a99eb1-ef34-4fee-87f1-6efb148b0b41" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>当伊甸园需要垃圾回收时，挑出一个空闲区域作为幸存区，用复制算法复制存活对象，需要暂停用户线程</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/447831d4-c7b0-483d-a3c8-86693c2822e4"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/447831d4-c7b0-483d-a3c8-86693c2822e4" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/447831d4-c7b0-483d-a3c8-86693c2822e4"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/447831d4-c7b0-483d-a3c8-86693c2822e4" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="4">
 <li>复制完成，将之前的伊甸园内存释放</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aabb315c-3935-4e85-ba02-9c600df270eb"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/aabb315c-3935-4e85-ba02-9c600df270eb" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aabb315c-3935-4e85-ba02-9c600df270eb"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/aabb315c-3935-4e85-ba02-9c600df270eb" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="5">
 <li>随着时间流逝，伊甸园的内存又有不足</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/73073182-71c7-440a-aea7-b3852cec678c"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/73073182-71c7-440a-aea7-b3852cec678c" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/73073182-71c7-440a-aea7-b3852cec678c"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/73073182-71c7-440a-aea7-b3852cec678c" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="6">
 <li>将伊甸园以及之前幸存区中的存活对象，采用复制算法，复制到新的幸存区，其中较老对象晋升至老年代</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9876ff1c-2d62-4fdf-adf9-80bc2d05b546"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/9876ff1c-2d62-4fdf-adf9-80bc2d05b546" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9876ff1c-2d62-4fdf-adf9-80bc2d05b546"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/9876ff1c-2d62-4fdf-adf9-80bc2d05b546" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="7">
 <li>释放伊甸园以及之前幸存区的内存</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/62372c13-ffcc-4372-b5ea-092fe1555565"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/62372c13-ffcc-4372-b5ea-092fe1555565" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/62372c13-ffcc-4372-b5ea-092fe1555565"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/62372c13-ffcc-4372-b5ea-092fe1555565" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p><strong>G1 回收阶段 - 并发标记与混合收集</strong></p>
 <ol>
 <li>当老年代占用内存超过阈值后，触发并发标记，这时无需暂停用户线程</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9b97fe81-59a3-46e0-b211-b8bd913e7faa"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/9b97fe81-59a3-46e0-b211-b8bd913e7faa" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/9b97fe81-59a3-46e0-b211-b8bd913e7faa"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/9b97fe81-59a3-46e0-b211-b8bd913e7faa" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="2">
 <li>并发标记之后，会有重新标记阶段解决漏标问题，此时需要暂停用户线程。这些都完成后就知道了老年代有哪些存活对象，随后进入混合收集阶段。此时不会对所有老年代区域进行回收，而是根据<strong>暂停时间目标</strong>优先回收价值高（存活对象少）的区域（这也是 Gabage First 名称的由来）。</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3c760969-4b3b-4af7-beec-d45e90a7cad9"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/3c760969-4b3b-4af7-beec-d45e90a7cad9" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3c760969-4b3b-4af7-beec-d45e90a7cad9"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/3c760969-4b3b-4af7-beec-d45e90a7cad9" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>混合收集阶段中，参与复制的有 eden、survivor、old，下图显示了伊甸园和幸存区的存活对象复制</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f2360f05-1eb5-43bc-b0b6-058433241950"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/f2360f05-1eb5-43bc-b0b6-058433241950" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f2360f05-1eb5-43bc-b0b6-058433241950"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/f2360f05-1eb5-43bc-b0b6-058433241950" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="4">
 <li>下图显示了老年代和幸存区晋升的存活对象的复制</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c7fb02bd-5f1c-4f61-aecf-d3de00c18607"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/c7fb02bd-5f1c-4f61-aecf-d3de00c18607" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c7fb02bd-5f1c-4f61-aecf-d3de00c18607"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/c7fb02bd-5f1c-4f61-aecf-d3de00c18607" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="5">
 <li>复制完成，内存得到释放。进入下一轮的新生代回收、并发标记、混合收集</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d5a5c13b-9db8-4d57-9aec-79b4b243f1b4"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/d5a5c13b-9db8-4d57-9aec-79b4b243f1b4" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d5a5c13b-9db8-4d57-9aec-79b4b243f1b4"><img width="846" height="634" alt="Image" src="https://github.com/user-attachments/assets/d5a5c13b-9db8-4d57-9aec-79b4b243f1b4" style="max-width: 100%; height: auto; max-height: 634px;; aspect-ratio: 846 / 634; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <h2>4. 内存溢出</h2>
 <p><strong>要求</strong></p>
 <ul>
@@ -760,7 +760,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ol>
 <p><strong>对双亲委派的误解</strong></p>
 <p>下面面试题的回答是错误的</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/72f0f60d-c057-478d-b1e9-fb7f5686131e"><img width="940" height="237" alt="Image" src="https://github.com/user-attachments/assets/72f0f60d-c057-478d-b1e9-fb7f5686131e" style="max-width: 100%; height: auto; max-height: 237px;; aspect-ratio: 940 / 237; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/72f0f60d-c057-478d-b1e9-fb7f5686131e"><img width="940" height="237" alt="Image" src="https://github.com/user-attachments/assets/72f0f60d-c057-478d-b1e9-fb7f5686131e" style="max-width: 100%; height: auto; max-height: 237px;; aspect-ratio: 940 / 237; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>错在哪了？</p>
 <ul>
 <li>
@@ -796,7 +796,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>通过 GC Root 的引用链，如果强引用不到该对象，该对象才能被回收</p>
 </li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/947d2050-4618-40d0-aec0-36985d555cc0"><img width="383" height="90" alt="Image" src="https://github.com/user-attachments/assets/947d2050-4618-40d0-aec0-36985d555cc0" style="max-width: 100%; height: auto; max-height: 90px;; aspect-ratio: 383 / 90; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/947d2050-4618-40d0-aec0-36985d555cc0"><img width="383" height="90" alt="Image" src="https://github.com/user-attachments/assets/947d2050-4618-40d0-aec0-36985d555cc0" style="max-width: 100%; height: auto; max-height: 90px;; aspect-ratio: 383 / 90; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p><strong>软引用（SoftReference）</strong></p>
 <ol>
 <li>
@@ -812,7 +812,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>典型例子是反射数据</p>
 </li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c17760da-6662-4a7f-845f-7c2a1b1af716"><img width="618" height="88" alt="Image" src="https://github.com/user-attachments/assets/c17760da-6662-4a7f-845f-7c2a1b1af716" style="max-width: 100%; height: auto; max-height: 88px;; aspect-ratio: 618 / 88; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c17760da-6662-4a7f-845f-7c2a1b1af716"><img width="618" height="88" alt="Image" src="https://github.com/user-attachments/assets/c17760da-6662-4a7f-845f-7c2a1b1af716" style="max-width: 100%; height: auto; max-height: 88px;; aspect-ratio: 618 / 88; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p><strong>弱引用（WeakReference）</strong></p>
 <ol>
 <li>
@@ -828,7 +828,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>典型例子是 ThreadLocalMap 中的 Entry 对象</p>
 </li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e3b4e6d7-1172-4589-8d7b-8310600bc8f8"><img width="622" height="92" alt="Image" src="https://github.com/user-attachments/assets/e3b4e6d7-1172-4589-8d7b-8310600bc8f8" style="max-width: 100%; height: auto; max-height: 92px;; aspect-ratio: 622 / 92; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e3b4e6d7-1172-4589-8d7b-8310600bc8f8"><img width="622" height="92" alt="Image" src="https://github.com/user-attachments/assets/e3b4e6d7-1172-4589-8d7b-8310600bc8f8" style="max-width: 100%; height: auto; max-height: 92px;; aspect-ratio: 622 / 92; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p><strong>虚引用（PhantomReference）</strong></p>
 <ol>
 <li>
@@ -841,7 +841,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>典型例子是 Cleaner 释放 DirectByteBuffer 关联的直接内存</p>
 </li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d415f3cd-2d98-489f-bb72-4e4b9e8fb5ab"><img width="593" height="245" alt="Image" src="https://github.com/user-attachments/assets/d415f3cd-2d98-489f-bb72-4e4b9e8fb5ab" style="max-width: 100%; height: auto; max-height: 245px;; aspect-ratio: 593 / 245; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d415f3cd-2d98-489f-bb72-4e4b9e8fb5ab"><img width="593" height="245" alt="Image" src="https://github.com/user-attachments/assets/d415f3cd-2d98-489f-bb72-4e4b9e8fb5ab" style="max-width: 100%; height: auto; max-height: 245px;; aspect-ratio: 593 / 245; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <blockquote>
 <p><em><strong>代码说明</strong></em></p>
 <ul>
@@ -864,13 +864,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>对 finalize 方法进行处理的核心逻辑位于 java.lang.ref.Finalizer 类中，它包含了名为 unfinalized 的静态变量（双向链表结构），Finalizer 也可被视为另一种引用对象（地位与软、弱、虚相当，只是不对外，无法直接使用）</li>
 <li>当重写了 finalize 方法的对象，在构造方法调用之时，JVM 都会将其包装成一个 Finalizer 对象，并加入 unfinalized 链表中</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c0c42997-4a4b-46a9-ac57-05ec5f04df6c"><img width="618" height="250" alt="Image" src="https://github.com/user-attachments/assets/c0c42997-4a4b-46a9-ac57-05ec5f04df6c" style="max-width: 100%; height: auto; max-height: 250px;; aspect-ratio: 618 / 250; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c0c42997-4a4b-46a9-ac57-05ec5f04df6c"><img width="618" height="250" alt="Image" src="https://github.com/user-attachments/assets/c0c42997-4a4b-46a9-ac57-05ec5f04df6c" style="max-width: 100%; height: auto; max-height: 250px;; aspect-ratio: 618 / 250; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="3">
 <li>Finalizer 类中还有另一个重要的静态变量，即 ReferenceQueue 引用队列，刚开始它是空的。当狗对象可以被当作垃圾回收时，就会把这些狗对象对应的 Finalizer 对象加入此引用队列</li>
 <li>但此时 Dog 对象还没法被立刻回收，因为 unfinalized -&gt; Finalizer 这一引用链还在引用它嘛，为的是【先别着急回收啊，等我调完 finalize 方法，再回收】</li>
 <li>FinalizerThread 线程会从 ReferenceQueue 中逐一取出每个 Finalizer 对象，把它们从链表断开并真正调用 finallize 方法</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7345ff5b-216b-4d1b-8e49-61f69ca4bee4"><img width="616" height="220" alt="Image" src="https://github.com/user-attachments/assets/7345ff5b-216b-4d1b-8e49-61f69ca4bee4" style="max-width: 100%; height: auto; max-height: 220px;; aspect-ratio: 616 / 220; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7345ff5b-216b-4d1b-8e49-61f69ca4bee4"><img width="616" height="220" alt="Image" src="https://github.com/user-attachments/assets/7345ff5b-216b-4d1b-8e49-61f69ca4bee4" style="max-width: 100%; height: auto; max-height: 220px;; aspect-ratio: 616 / 220; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <ol start="6">
 <li>由于整个 Finalizer 对象已经从 unfinalized 链表中断开，这样没谁能引用到它和狗对象，所以下次 gc 时就被回收了</li>
 </ol>

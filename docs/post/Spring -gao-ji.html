@@ -1306,7 +1306,7 @@ proxy after...
 <li>普通类, 会包含局部变量表, 用 asm 可以拿到参数名</li>
 <li>接口, 不会包含局部变量表, 无法获得参数名
 <ul>
-<li>这也是 MyBatis 在实现 Mapper 接口时为何要提供 <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/param/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/param">@param</a> 注解来辅助获得参数名</li>
+<li>这也是 MyBatis 在实现 Mapper 接口时为何要提供 @Param 注解来辅助获得参数名</li>
 </ul>
 </li>
 </ul>
@@ -2050,9 +2050,9 @@ proxy after...
 <div class="highlight highlight-source-shell"><pre class="notranslate">curl https://start.spring.io</pre></div>
 <h3>38) Boot War项目</h3>
 <p>步骤1：创建模块，区别在于打包方式选择 war</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7e322501-5358-4878-ab75-100bfaa65ab6"><img width="1089" height="937" alt="Image" src="https://github.com/user-attachments/assets/7e322501-5358-4878-ab75-100bfaa65ab6" style="max-width: 100%; height: auto; max-height: 937px;; aspect-ratio: 1089 / 937; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7e322501-5358-4878-ab75-100bfaa65ab6"><img width="1089" height="937" alt="Image" src="https://github.com/user-attachments/assets/7e322501-5358-4878-ab75-100bfaa65ab6" style="max-width: 100%; height: auto; max-height: 937px;; aspect-ratio: 1089 / 937; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>接下来勾选 Spring Web 支持</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f6cba394-deec-4ff7-bc9b-eed42d0a1d15"><img width="1089" height="937" alt="Image" src="https://github.com/user-attachments/assets/f6cba394-deec-4ff7-bc9b-eed42d0a1d15" style="max-width: 100%; height: auto; max-height: 937px;; aspect-ratio: 1089 / 937; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f6cba394-deec-4ff7-bc9b-eed42d0a1d15"><img width="1089" height="937" alt="Image" src="https://github.com/user-attachments/assets/f6cba394-deec-4ff7-bc9b-eed42d0a1d15" style="max-width: 100%; height: auto; max-height: 937px;; aspect-ratio: 1089 / 937; background-color: var(--bgColor-muted); border-radius: 6px" class="js-gh-image-fallback"></a></p>
 <p>步骤2：编写控制器</p>
 <div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-c1">@</span><span class="pl-c1">Controller</span>
 <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-smi">MyController</span> {
