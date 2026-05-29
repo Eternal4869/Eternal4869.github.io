@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Fri, 29 May 2026 09:31:04 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>分布式理论基础中的CAP和BASE</title><link>https://Eternal4869.github.io/post/fen-bu-shi-li-lun-ji-chu-zhong-de-CAP-he-BASE.html</link><description># 分布式理论基础：CAP 与 BASE 理论详解
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>学习日记</title><link>https://Eternal4869.github.io</link><description>CodeNode的学习日记</description><copyright>学习日记</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/73345601?v=4</url><title>avatar</title><link>https://Eternal4869.github.io</link></image><lastBuildDate>Fri, 29 May 2026 09:31:47 +0000</lastBuildDate><managingEditor>学习日记</managingEditor><ttl>60</ttl><webMaster>学习日记</webMaster><item><title>分布式理论基础中的CAP和BASE</title><link>https://Eternal4869.github.io/post/fen-bu-shi-li-lun-ji-chu-zhong-de-CAP-he-BASE.html</link><description># 分布式理论基础：CAP 与 BASE 理论详解
 
 ## 🔷 CAP 理论
 
@@ -434,7 +434,7 @@ int m = (l + r) &gt;&gt;&gt; 1;
 
 3. 在拥有128个元素的数组中二分查找一个数，需要比较的次数最多不超过多少次
 
-对于前两个题目，记得一个简要判断口诀：奇数二分取中间，偶数二分取中间靠左。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20-ji-chu.html</guid><pubDate>Sat, 28 Mar 2026 09:40:43 +0000</pubDate></item><item><title>Java basic</title><link>https://Eternal4869.github.io/post/Java%20basic.html</link><description>[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20basic.html</guid><pubDate>Thu, 26 Feb 2026 03:05:03 +0000</pubDate></item><item><title>容器接口（未完）</title><link>https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html</link><description># 1. BeanFactory
+对于前两个题目，记得一个简要判断口诀：奇数二分取中间，偶数二分取中间靠左。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20-ji-chu.html</guid><pubDate>Sat, 28 Mar 2026 09:40:43 +0000</pubDate></item><item><title>Java basic</title><link>https://Eternal4869.github.io/post/Java%20basic.html</link><description>[Java八股.pdf](https://github.com/user-attachments/files/25562849/Java.pdf)。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/Java%20basic.html</guid><pubDate>Thu, 26 Feb 2026 03:05:03 +0000</pubDate></item><item><title>容器接口</title><link>https://Eternal4869.github.io/post/rong-qi-jie-kou.html</link><description># 1. BeanFactory
 
 ## （1）什么是BeanFactory
 
@@ -446,7 +446,7 @@ int m = (l + r) &gt;&gt;&gt; 1;
 ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(XXX.class, args);
 ```
 
-SpringBoot启动类的`run()`方法返回的就是一种`ApplicationContext`。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/rong-qi-jie-kou-%EF%BC%88-wei-wan-%EF%BC%89.html</guid><pubDate>Mon, 22 Sep 2025 11:56:47 +0000</pubDate></item><item><title>MFC ActiveX 微软官方文档</title><link>https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</link><description>https://learn.microsoft.com/zh-cn/cpp/mfc/mfc-activex-controls?view=msvc-170。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</guid><pubDate>Sat, 30 Aug 2025 14:49:47 +0000</pubDate></item><item><title>QT-Lambda表达式</title><link>https://Eternal4869.github.io/post/QT-Lambda-biao-da-shi.html</link><description># QT-Lambda表达式
+SpringBoot启动类的`run()`方法返回的就是一种`ApplicationContext`。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/rong-qi-jie-kou.html</guid><pubDate>Mon, 22 Sep 2025 11:56:47 +0000</pubDate></item><item><title>MFC ActiveX 微软官方文档</title><link>https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</link><description>https://learn.microsoft.com/zh-cn/cpp/mfc/mfc-activex-controls?view=msvc-170。</description><guid isPermaLink="true">https://Eternal4869.github.io/post/MFC%20ActiveX%20-wei-ruan-guan-fang-wen-dang.html</guid><pubDate>Sat, 30 Aug 2025 14:49:47 +0000</pubDate></item><item><title>QT-Lambda表达式</title><link>https://Eternal4869.github.io/post/QT-Lambda-biao-da-shi.html</link><description># QT-Lambda表达式
 
 ##  lambda表达式构成
 
