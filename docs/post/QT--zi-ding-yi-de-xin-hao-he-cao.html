@@ -107,7 +107,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <span class="pl-k">class</span> <span class="pl-en">student</span> : <span class="pl-k">public</span> <span class="pl-en">QObject</span>
 {
-    Q_OBJECT
+    <span class="pl-c1">Q_OBJECT</span>
 <span class="pl-k">public:</span>
     <span class="pl-k">explicit</span> <span class="pl-en">student</span>(QObject *parent = <span class="pl-c1">nullptr</span>);
 
@@ -129,7 +129,7 @@ public slots:
 
 <span class="pl-k">class</span> <span class="pl-en">teacher</span> : <span class="pl-k">public</span> <span class="pl-en">QObject</span>
 {
-    Q_OBJECT
+    <span class="pl-c1">Q_OBJECT</span>
 <span class="pl-k">public:</span>
     <span class="pl-k">explicit</span> <span class="pl-en">teacher</span>(QObject *parent = <span class="pl-c1">nullptr</span>);
 
@@ -151,7 +151,7 @@ signals:
 
 <span class="pl-k">class</span> <span class="pl-en">myWidget</span> : <span class="pl-k">public</span> <span class="pl-en">QWidget</span>
 {
-    Q_OBJECT
+    <span class="pl-c1">Q_OBJECT</span>
 
 <span class="pl-k">public:</span>
     <span class="pl-en">myWidget</span>(QWidget *parent = <span class="pl-c1">nullptr</span>);
