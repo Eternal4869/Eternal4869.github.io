@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/73345601?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="在Java及所有面向对象编程语言中，**封装、继承、多态**被称为面向对象编程（OOP）的三大基本特性。">
+<meta property="og:title" content="Java中的封装、继承和多态">
+<meta property="og:description" content="在Java及所有面向对象编程语言中，**封装、继承、多态**被称为面向对象编程（OOP）的三大基本特性。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://Eternal4869.github.io/post/Java-zhong-de-feng-zhuang-%E3%80%81-ji-cheng-he-duo-tai.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/73345601?v=4">
+<title>Java中的封装、继承和多态</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Java中的封装、继承和多态</h1>
+<div class="title-right">
+    <a href="https://Eternal4869.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/30" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><p>在Java及所有面向对象编程语言中，<strong>封装、继承、多态</strong>被称为面向对象编程（OOP）的三大基本特性。它们共同构成了Java构建复杂、可维护、可扩展软件系统的基础。</p>
+<hr>
+<h3>一、 封装 (Encapsulation)</h3>
+<h4>1. 什么是封装？</h4>
+<p>封装是指<strong>将对象的属性（状态）和行为（方法）结合成一个独立的整体，并尽可能隐藏对象的内部实现细节</strong>，仅对外暴露必要的公共接口来进行访问和修改。<br>
+通俗地说：就像用胶囊把药粉包起来，你不需要知道药粉是怎么混合的，只需要吞下胶囊（调用接口）就能治病。</p>
+<h4>2. 为什么要封装？（优点）</h4>
+<ul>
+<li><strong>安全性</strong>：防止外部代码随意修改对象的核心数据，避免数据被破坏。</li>
+<li><strong>易维护性</strong>：内部实现细节改变时，只要对外接口不变，就不会影响外部调用者（高内聚，低耦合）。</li>
+<li><strong>可控性</strong>：可以在 setter 方法中加入逻辑校验，控制数据的合法性。</li>
+</ul>
+<h4>3. 如何实现？</h4>
+<p>在Java中，主要通过<strong>访问权限修饰符</strong>（<code class="notranslate">private</code>, <code class="notranslate">default</code>, <code class="notranslate">protected</code>, <code class="notranslate">public</code>）来实现。通常将属性设为 <code class="notranslate">private</code>，然后提供 <code class="notranslate">public</code> 的 <code class="notranslate">getter</code> 和 <code class="notranslate">setter</code> 方法。</p>
+<h4>4. 代码示例：银行账户</h4>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-smi">BankAccount</span> {
+    <span class="pl-c">// 1. 将属性私有化，外部无法直接访问和修改</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> <span class="pl-s1">accountNo</span>;
+    <span class="pl-k">private</span> <span class="pl-smi">double</span> <span class="pl-s1">balance</span>;
+
+    <span class="pl-k">public</span> <span class="pl-smi">BankAccount</span>(<span class="pl-smi">String</span> <span class="pl-s1">accountNo</span>, <span class="pl-smi">double</span> <span class="pl-s1">initialBalance</span>) {
+        <span class="pl-smi">this</span>.<span class="pl-s1">accountNo</span> = <span class="pl-s1">accountNo</span>;
+        <span class="pl-c">// 利用封装进行数据校验</span>
+        <span class="pl-k">if</span> (<span class="pl-s1">initialBalance</span> &gt;= <span class="pl-c1">0</span>) {
+            <span class="pl-smi">this</span>.<span class="pl-s1">balance</span> = <span class="pl-s1">initialBalance</span>;
+        } <span class="pl-k">else</span> {
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">IllegalArgumentException</span>(<span class="pl-s">"初始余额不能为负数"</span>);
+        }
+    }
+
+    <span class="pl-c">// 2. 提供公共的存款方法（隐藏了余额增加的内部细节）</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">deposit</span>(<span class="pl-smi">double</span> <span class="pl-s1">amount</span>) {
+        <span class="pl-k">if</span> (<span class="pl-s1">amount</span> &gt; <span class="pl-c1">0</span>) {
+            <span class="pl-smi">this</span>.<span class="pl-s1">balance</span> += <span class="pl-s1">amount</span>;
+            <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"存款成功，当前余额: "</span> + <span class="pl-s1">balance</span>);
+        } <span class="pl-k">else</span> {
+            <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"存款金额必须大于0"</span>);
+        }
+    }
+
+    <span class="pl-c">// 3. 提供公共的取款方法（加入了余额是否充足的校验逻辑）</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">withdraw</span>(<span class="pl-smi">double</span> <span class="pl-s1">amount</span>) {
+        <span class="pl-k">if</span> (<span class="pl-s1">amount</span> &gt; <span class="pl-c1">0</span> &amp;&amp; <span class="pl-s1">amount</span> &lt;= <span class="pl-s1">balance</span>) {
+            <span class="pl-smi">this</span>.<span class="pl-s1">balance</span> -= <span class="pl-s1">amount</span>;
+            <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"取款成功，当前余额: "</span> + <span class="pl-s1">balance</span>);
+        } <span class="pl-k">else</span> {
+            <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"取款失败：金额无效或余额不足"</span>);
+        }
+    }
+
+    <span class="pl-c">// 4. 余额通常只允许查看，不允许外部随意修改，所以只提供 getter</span>
+    <span class="pl-k">public</span> <span class="pl-smi">double</span> <span class="pl-en">getBalance</span>() {
+        <span class="pl-k">return</span> <span class="pl-s1">balance</span>;
+    }
+}</pre></div>
+<p><strong>测试：</strong></p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-smi">BankAccount</span> <span class="pl-s1">myAccount</span> = <span class="pl-k">new</span> <span class="pl-smi">BankAccount</span>(<span class="pl-s">"62220000"</span>, <span class="pl-c1">1000</span>);
+<span class="pl-c">// myAccount.balance = -500; // 编译报错！外部无法直接修改私有属性</span>
+<span class="pl-s1">myAccount</span>.<span class="pl-en">withdraw</span>(<span class="pl-c1">2000</span>); <span class="pl-c">// 输出：取款失败：金额无效或余额不足（内部逻辑保护了数据）</span></pre></div>
+<hr>
+<h3>二、 继承 (Inheritance)</h3>
+<h4>1. 什么是继承？</h4>
+<p>继承是指<strong>让一个类（子类）获得另一个类（父类）的属性和方法</strong>。它体现了现实世界中“is-a”（是一个）的关系。例如：“狗”是一个“动物”。</p>
+<h4>2. 为什么要继承？（优点）</h4>
+<ul>
+<li><strong>代码复用</strong>：子类可以直接使用父类已有的代码，减少重复编写。</li>
+<li><strong>建立类之间的层次关系</strong>：为后面的“多态”打下基础。</li>
+</ul>
+<h4>3. 如何实现？</h4>
+<p>在Java中使用 <code class="notranslate">extends</code> 关键字。<br>
+<em>注意：Java<strong>只支持单继承</strong>（一个子类只能有一个直接父类），但支持多层继承。所有类最终都继承自 <code class="notranslate">java.lang.Object</code> 类。</em></p>
+<h4>4. 代码示例：动物体系</h4>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-c">// 父类</span>
+<span class="pl-k">class</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-k">protected</span> <span class="pl-smi">String</span> <span class="pl-s1">name</span>; <span class="pl-c">// 使用 protected，允许子类访问</span>
+
+    <span class="pl-k">public</span> <span class="pl-smi">Animal</span>(<span class="pl-smi">String</span> <span class="pl-s1">name</span>) {
+        <span class="pl-smi">this</span>.<span class="pl-s1">name</span> = <span class="pl-s1">name</span>;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">eat</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s1">name</span> + <span class="pl-s">" 正在吃东西..."</span>);
+    }
+    
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">sleep</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s1">name</span> + <span class="pl-s">" 正在睡觉..."</span>);
+    }
+}
+
+<span class="pl-c">// 子类继承父类</span>
+<span class="pl-k">class</span> <span class="pl-smi">Dog</span> <span class="pl-k">extends</span> <span class="pl-smi">Animal</span> {
+    
+    <span class="pl-c">// 子类特有的属性</span>
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> <span class="pl-s1">breed</span>; 
+
+    <span class="pl-k">public</span> <span class="pl-smi">Dog</span>(<span class="pl-smi">String</span> <span class="pl-s1">name</span>, <span class="pl-smi">String</span> <span class="pl-s1">breed</span>) {
+        <span class="pl-en">super</span>(<span class="pl-s1">name</span>); <span class="pl-c">// 调用父类的构造方法</span>
+        <span class="pl-smi">this</span>.<span class="pl-s1">breed</span> = <span class="pl-s1">breed</span>;
+    }
+
+    <span class="pl-c">// 子类特有的方法</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">bark</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s1">name</span> + <span class="pl-s">" 汪汪叫！"</span>);
+    }
+}
+
+<span class="pl-k">class</span> <span class="pl-smi">Cat</span> <span class="pl-k">extends</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-k">public</span> <span class="pl-smi">Cat</span>(<span class="pl-smi">String</span> <span class="pl-s1">name</span>) {
+        <span class="pl-en">super</span>(<span class="pl-s1">name</span>);
+    }
+    
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">catchMouse</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s1">name</span> + <span class="pl-s">" 正在抓老鼠..."</span>);
+    }
+}</pre></div>
+<p><strong>测试：</strong></p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-smi">Dog</span> <span class="pl-s1">dog</span> = <span class="pl-k">new</span> <span class="pl-smi">Dog</span>(<span class="pl-s">"旺财"</span>, <span class="pl-s">"中华田园犬"</span>);
+<span class="pl-s1">dog</span>.<span class="pl-en">eat</span>();       <span class="pl-c">// 继承自父类的方法，输出：旺财 正在吃东西...</span>
+<span class="pl-s1">dog</span>.<span class="pl-en">sleep</span>();     <span class="pl-c">// 继承自父类的方法</span>
+<span class="pl-s1">dog</span>.<span class="pl-en">bark</span>();      <span class="pl-c">// 子类自己的方法</span>
+
+<span class="pl-smi">Cat</span> <span class="pl-s1">cat</span> = <span class="pl-k">new</span> <span class="pl-smi">Cat</span>(<span class="pl-s">"汤姆"</span>);
+<span class="pl-s1">cat</span>.<span class="pl-en">catchMouse</span>(); <span class="pl-c">// 子类自己的方法</span></pre></div>
+<hr>
+<h3>三、 多态 (Polymorphism)</h3>
+<h4>1. 什么是多态？</h4>
+<p>多态是指<strong>同一个行为（方法调用），具有多个不同表现形式或形态</strong>。<br>
+通俗地说：同样是“叫”这个动作，狗叫是“汪汪”，猫叫是“喵喵”。在代码层面表现为：<strong>父类的引用变量，指向子类的对象，调用同一个方法时，表现出不同的行为。</strong></p>
+<h4>2. 多态存在的三个前提条件：</h4>
+<ol>
+<li><strong>继承</strong>（或实现接口）。</li>
+<li><strong>方法重写</strong>（子类重写父类的方法）。</li>
+<li><strong>父类引用指向子类对象</strong>（向上转型）。</li>
+</ol>
+<h4>3. 为什么要多态？（优点）</h4>
+<ul>
+<li><strong>消除类型之间的耦合关系</strong>：提高代码的扩展性。</li>
+<li><strong>统一接口调用</strong>：不需要知道对象的具体类型，就能调用其方法。</li>
+</ul>
+<h4>4. 代码示例：多态的体现与类型转换</h4>
+<p>我们继续完善上面的 <code class="notranslate">Animal</code> 体系，让子类<strong>重写</strong>父类的 <code class="notranslate">eat()</code> 方法。</p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-c">// 修改父类和子类，加入方法重写</span>
+<span class="pl-k">class</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">eat</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"动物在吃.generic食物"</span>);
+    }
+}
+
+<span class="pl-k">class</span> <span class="pl-smi">Dog</span> <span class="pl-k">extends</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-c1">@</span><span class="pl-c1">Override</span> <span class="pl-c">// 建议加上注解，检查是否重写成功</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">eat</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"狗在啃骨头"</span>);
+    }
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">guardHouse</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"狗在看家护院"</span>);
+    }
+}
+
+<span class="pl-k">class</span> <span class="pl-smi">Cat</span> <span class="pl-k">extends</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">eat</span>() {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"猫在吃鱼"</span>);
+    }
+}</pre></div>
+<p><strong>多态的核心演示：</strong></p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-smi">PolymorphismTest</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">void</span> <span class="pl-en">main</span>(<span class="pl-smi">String</span>[] <span class="pl-s1">args</span>) {
+        <span class="pl-c">// 1. 向上转型：父类引用指向子类对象</span>
+        <span class="pl-smi">Animal</span> <span class="pl-s1">myDog</span> = <span class="pl-k">new</span> <span class="pl-smi">Dog</span>(); 
+        <span class="pl-smi">Animal</span> <span class="pl-s1">myCat</span> = <span class="pl-k">new</span> <span class="pl-smi">Cat</span>();
+
+        <span class="pl-c">// 2. 多态的体现：调用同一个 eat() 方法，执行的是子类重写后的逻辑</span>
+        <span class="pl-s1">myDog</span>.<span class="pl-en">eat</span>(); <span class="pl-c">// 输出：狗在啃骨头</span>
+        <span class="pl-s1">myCat</span>.<span class="pl-en">eat</span>(); <span class="pl-c">// 输出：猫在吃鱼</span>
+        
+        <span class="pl-c">// 3. 多态的局限性：</span>
+        <span class="pl-c">// 父类引用只能调用父类中声明过的方法。</span>
+        <span class="pl-c">// myDog.guardHouse(); // 编译报错！Animal类中没有guardHouse方法</span>
+        
+        <span class="pl-c">// 4. 向下转型：如果确实需要调用子类特有的方法，需要进行强制类型转换</span>
+        <span class="pl-c">// 为了安全，转换前必须使用 instanceof 关键字进行判断</span>
+        <span class="pl-k">if</span> (<span class="pl-s1">myDog</span> <span class="pl-k">instanceof</span> <span class="pl-smi">Dog</span>) {
+            <span class="pl-smi">Dog</span> <span class="pl-s1">realDog</span> = (<span class="pl-smi">Dog</span>) <span class="pl-s1">myDog</span>; <span class="pl-c">// 向下转型</span>
+            <span class="pl-s1">realDog</span>.<span class="pl-en">guardHouse</span>();      <span class="pl-c">// 输出：狗在看家护院</span>
+        }
+    }
+    
+    <span class="pl-c">// 5. 多态在实际开发中的最大威力：作为方法参数，提高扩展性</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">void</span> <span class="pl-en">feedAnimal</span>(<span class="pl-smi">Animal</span> <span class="pl-s1">animal</span>) {
+        <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">print</span>(<span class="pl-s">"主人开始喂食: "</span>);
+        <span class="pl-s1">animal</span>.<span class="pl-en">eat</span>(); <span class="pl-c">// 传入什么对象，就执行什么对象的 eat() 方法</span>
+    }
+}</pre></div>
+<p><strong>扩展性体现：</strong></p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-c">// 假设未来我们又增加了一个 Pig 类</span>
+<span class="pl-k">class</span> <span class="pl-smi">Pig</span> <span class="pl-k">extends</span> <span class="pl-smi">Animal</span> {
+    <span class="pl-c1">@</span><span class="pl-c1">Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">eat</span>() { <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-s">"猪在吃饲料"</span>); }
+}
+
+<span class="pl-c">// 我们不需要修改 feedAnimal 方法的代码，直接传入新对象即可</span>
+<span class="pl-smi">PolymorphismTest</span>.<span class="pl-en">feedAnimal</span>(<span class="pl-k">new</span> <span class="pl-smi">Dog</span>()); <span class="pl-c">// 主人开始喂食: 狗在啃骨头</span>
+<span class="pl-smi">PolymorphismTest</span>.<span class="pl-en">feedAnimal</span>(<span class="pl-k">new</span> <span class="pl-smi">Pig</span>()); <span class="pl-c">// 主人开始喂食: 猪在吃饲料</span></pre></div>
+<hr>
+<h3>四、 总结与串联</h3>
+<p>这三大特性不是孤立的，而是相辅相成的：</p>
+<ol>
+<li><strong>封装</strong>是基础，它保证了数据的安全和模块的独立，让类成为一个可靠的“黑盒”。</li>
+<li><strong>继承</strong>是纽带，它建立了类与类之间的层级关系，实现了代码的复用。</li>
+<li><strong>多态</strong>是升华，它基于封装和继承，利用“父类引用指向子类对象”和“动态绑定（运行时决定调用哪个方法）”的机制，让系统具备极强的<strong>灵活性和可扩展性</strong>（符合面向对象设计原则中的“开闭原则”：对扩展开放，对修改封闭）。</li>
+</ol></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://Eternal4869.github.io">学习日记</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Eternal4869/Eternal4869.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
