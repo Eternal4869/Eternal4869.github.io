@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/73345601?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="与 `ArrayList` 的连续内存不同，`LinkedList` 的设计哲学完全建立在**离散内存**之上。">
+<meta property="og:title" content="Java LinkedList详解">
+<meta property="og:description" content="与 `ArrayList` 的连续内存不同，`LinkedList` 的设计哲学完全建立在**离散内存**之上。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://Eternal4869.github.io/post/Java%20LinkedList-xiang-jie.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/73345601?v=4">
+<title>Java LinkedList详解</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Java LinkedList详解</h1>
+<div class="title-right">
+    <a href="https://Eternal4869.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/35" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><p>与 <code class="notranslate">ArrayList</code> 的连续内存不同，<code class="notranslate">LinkedList</code> 的设计哲学完全建立在<strong>离散内存</strong>之上。</p>
+<hr>
+<h3>一、 底层：双向链表 Node(prev, item, next)</h3>
+<p><code class="notranslate">LinkedList</code> 的本质是一个<strong>双向链表</strong>，它不要求内存连续，而是通过“指针”将分散在堆内存中的节点串联起来。</p>
+<h4>1. 节点结构 (Node)</h4>
+<p>在 <code class="notranslate">LinkedList</code> 内部，定义了一个静态内部类 <code class="notranslate">Node</code> 来存储数据和指针：</p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; {
+    <span class="pl-smi">E</span> <span class="pl-s1">item</span>;           <span class="pl-c">// 存储的实际数据</span>
+    <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">next</span>;     <span class="pl-c">// 指向后继节点的指针</span>
+    <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">prev</span>;     <span class="pl-c">// 指向前驱节点的指针</span>
+
+    <span class="pl-smi">Node</span>(<span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">prev</span>, <span class="pl-smi">E</span> <span class="pl-s1">element</span>, <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">next</span>) {
+        <span class="pl-smi">this</span>.<span class="pl-s1">item</span> = <span class="pl-s1">element</span>;
+        <span class="pl-smi">this</span>.<span class="pl-s1">next</span> = <span class="pl-s1">next</span>;
+        <span class="pl-smi">this</span>.<span class="pl-s1">prev</span> = <span class="pl-s1">prev</span>;
+    }
+}</pre></div>
+<h4>2. 链表的整体结构（版本差异考点）</h4>
+<ul>
+<li><strong>JDK 1.6 及以前</strong>：采用的是<strong>循环双向链表</strong>。内部有一个特殊的 <code class="notranslate">header</code> 节点，它的 <code class="notranslate">prev</code> 指向尾节点，<code class="notranslate">next</code> 指向头节点，尾节点的 <code class="notranslate">next</code> 和头节点的 <code class="notranslate">prev</code> 都指向 <code class="notranslate">header</code>。</li>
+<li><strong>JDK 1.7 及之后（当前主流）</strong>：为了节省内存，<strong>去掉了 <code class="notranslate">header</code> 节点</strong>，改为了<strong>普通的双向链表</strong>。
+<ul>
+<li>维护了两个核心属性：<code class="notranslate">transient Node&lt;E&gt; first;</code>（头节点）和 <code class="notranslate">transient Node&lt;E&gt; last;</code>（尾节点）。</li>
+<li>头节点的 <code class="notranslate">prev = null</code>，尾节点的 <code class="notranslate">next = null</code>。</li>
+</ul>
+</li>
+</ul>
+<h4>3. 内存特性</h4>
+<p>与数组不同，<code class="notranslate">LinkedList</code> 的节点在 JVM 堆内存中是<strong>分散分配</strong>的。每次 <code class="notranslate">new Node()</code> 时，JVM 会在堆中寻找一块足够放下该节点的内存，这些内存块在物理地址上<strong>通常是不连续的</strong>。</p>
+<hr>
+<h3>二、 核心操作中的“折半优化”</h3>
+<p>在理解快慢之前，必须知道 <code class="notranslate">LinkedList</code> 在源码层面做了一个非常聪明的优化：<strong>双向遍历（折半查找）</strong>。</p>
+<p>无论是查询、插入还是删除，只要涉及到根据索引 <code class="notranslate">index</code> 找节点，源码都会先判断 <code class="notranslate">index</code> 离头近还是离尾近：</p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-en">node</span>(<span class="pl-smi">int</span> <span class="pl-s1">index</span>) {
+    <span class="pl-c">// 核心优化：如果 index 小于 size 的一半，从头往后找；否则从尾往前找。</span>
+    <span class="pl-k">if</span> (<span class="pl-s1">index</span> &lt; (<span class="pl-s1">size</span> &gt;&gt; <span class="pl-c1">1</span>)) { 
+        <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">x</span> = <span class="pl-s1">first</span>;
+        <span class="pl-k">for</span> (<span class="pl-smi">int</span> <span class="pl-s1">i</span> = <span class="pl-c1">0</span>; <span class="pl-s1">i</span> &lt; <span class="pl-s1">index</span>; <span class="pl-s1">i</span>++) <span class="pl-s1">x</span> = <span class="pl-s1">x</span>.<span class="pl-s1">next</span>;
+        <span class="pl-k">return</span> <span class="pl-s1">x</span>;
+    } <span class="pl-k">else</span> {
+        <span class="pl-smi">Node</span>&lt;<span class="pl-smi">E</span>&gt; <span class="pl-s1">x</span> = <span class="pl-s1">last</span>;
+        <span class="pl-k">for</span> (<span class="pl-smi">int</span> <span class="pl-s1">i</span> = <span class="pl-s1">size</span> - <span class="pl-c1">1</span>; <span class="pl-s1">i</span> &gt; <span class="pl-s1">index</span>; <span class="pl-s1">i</span>--) <span class="pl-s1">x</span> = <span class="pl-s1">x</span>.<span class="pl-s1">prev</span>;
+        <span class="pl-k">return</span> <span class="pl-s1">x</span>;
+    }
+}</pre></div>
+<p><em>这个优化让链表在中间位置操作时的遍历次数减少了一半，但并没有改变其 $O(n)$ 的本质。</em></p>
+<hr>
+<h3>三、 为什么查询慢、增删快？（深度剖析与误区排雷）</h3>
+<p>这是面试中最常问的问题，但<strong>90% 的回答都是不准确的</strong>。我们必须打破“LinkedList 增删一定比 ArrayList 快”的刻板印象，分场景来剖析。</p>
+<h4>1. 为什么查询慢？（时间复杂度 $O(n)$）</h4>
+<ul>
+<li><strong>无法随机访问</strong>：因为内存不连续，无法像数组那样通过 <code class="notranslate">首地址 + 偏移量</code> 直接计算出目标地址。必须从 <code class="notranslate">first</code> 或 <code class="notranslate">last</code> 开始，顺着 <code class="notranslate">next</code> 或 <code class="notranslate">prev</code> 指针<strong>一步步遍历</strong>。</li>
+<li><strong>CPU 缓存极不友好（致命伤）</strong>：现代 CPU 读取内存时，会将连续的一块数据加载到 Cache（缓存行）中。<code class="notranslate">ArrayList</code> 的连续内存完美契合这一点；而 <code class="notranslate">LinkedList</code> 的节点分散在内存各处，访问下一个节点时，极大概率会触发 <strong>Cache Miss（缓存未命中）</strong>，导致 CPU 必须去慢速的主存中重新读取数据。<strong>这种底层的硬件级延迟，是链表查询极慢的核心原因。</strong></li>
+</ul>
+<h4>2. 为什么增删“快”？（严格界定条件）</h4>
+<p>说它增删快，<strong>必须加上严格的前提条件</strong>：</p>
+<ul>
+<li>
+<p><strong>真正的快（$O(1)$）：头部/尾部增删</strong></p>
+<ul>
+<li>如果只是在链表的最前面或最后面添加/删除元素，不需要遍历，直接修改 <code class="notranslate">first</code> 或 <code class="notranslate">last</code> 指针即可。此时时间复杂度是严格的 $O(1)$，确实比 <code class="notranslate">ArrayList</code> 快（<code class="notranslate">ArrayList</code> 头部插入需要移动所有元素）。</li>
+</ul>
+</li>
+<li>
+<p><strong>理论上的快（$O(1)$）：已知节点引用的中间增删</strong></p>
+<ul>
+<li>如果你<strong>已经拿到了</strong>要删除/插入位置的 <code class="notranslate">Node</code> 对象引用，只需要修改前后节点的指针（例如 <code class="notranslate">p.prev.next = p.next</code>），不需要移动任何其他元素。这个“修改指针”的动作是 $O(1)$ 的。</li>
+</ul>
+</li>
+<li>
+<p><strong>伪快（实际很慢）：根据索引在中间增删</strong></p>
+<ul>
+<li>如果你只知道 <code class="notranslate">index</code>（比如 <code class="notranslate">list.remove(5000)</code>），<code class="notranslate">LinkedList</code> 必须先<strong>遍历</strong>找到第 5000 个节点（耗时 $O(n)$，且因为 CPU 缓存不友好，遍历极慢），然后再修改指针（$O(1)$）。</li>
+<li>
+<strong>总耗时 = 慢速遍历 + 修改指针</strong>。在这种情况下，<code class="notranslate">LinkedList</code> 的增删<strong>远远慢于</strong> <code class="notranslate">ArrayList</code>（<code class="notranslate">ArrayList</code> 虽然需要 <code class="notranslate">System.arraycopy</code> 移动元素，但它是底层 C++ 实现的连续内存块拷贝，速度极快，且对 CPU 缓存友好）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3>四、 内存开销对比（隐藏的成本）</h3>
+<p>除了性能，<code class="notranslate">LinkedList</code> 的内存占用也远大于 <code class="notranslate">ArrayList</code>：</p>
+<ul>
+<li><strong>ArrayList</strong>：只存储元素的引用（64位系统开启指针压缩后为 4 字节/个）。</li>
+<li><strong>LinkedList</strong>：每个节点除了存储元素引用（4字节），还要存储 <code class="notranslate">prev</code> 和 <code class="notranslate">next</code> 两个指针（各 4 字节），再加上 Java 对象头（12或16字节），<strong>一个节点的实际内存开销至少是数据本身的 3 到 4 倍</strong>。</li>
+</ul>
+<hr>
+<h3>💡 总结与实战最佳实践</h3>
+<p>基于以上底层原理，在实际开发中请遵循以下原则：</p>
+<ol>
+<li>
+<strong>无脑首选 ArrayList</strong>：在 99% 的业务场景中，<code class="notranslate">ArrayList</code> 的综合性能（查询、CPU缓存命中率、内存占用）都完胜 <code class="notranslate">LinkedList</code>。</li>
+<li>
+<strong>打破迷信</strong>：<strong>绝对不要</strong>因为“中间增删多”就使用 <code class="notranslate">LinkedList</code>。在中间频繁增删时，<code class="notranslate">ArrayList</code> 的底层数组拷贝通常比 <code class="notranslate">LinkedList</code> 的链表遍历更快。</li>
+<li>
+<strong>何时使用 LinkedList</strong>：
+<ul>
+<li>只有当你明确需要<strong>在头部和尾部进行极高频的增删</strong>（例如实现消息队列、双端队列），且<strong>几乎不需要通过索引查询</strong>时，才考虑使用它。</li>
+<li><em>(注：即使在这种场景下，现代 Java 开发也更推荐使用 <strong><code class="notranslate">ArrayDeque</code></strong>，它基于循环数组实现，既具备头尾 $O(1)$ 增删的能力，又拥有数组对 CPU 缓存友好的优势，性能比 <code class="notranslate">LinkedList</code> 更好。)</em></li>
+</ul>
+</li>
+<li>
+<strong>迭代器删除</strong>：如果非要遍历 <code class="notranslate">LinkedList</code> 并删除元素，务必使用 <code class="notranslate">Iterator.remove()</code>，它内部维护了当前节点的引用，删除时只需 $O(1)$ 修改指针，避免了重复遍历。</li>
+</ol></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://Eternal4869.github.io">学习日记</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Eternal4869/Eternal4869.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</html>
