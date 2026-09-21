@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/73345601?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# Controller测试
+
+```java
+package com.heima.admin.controller.v1;
+
+import com.heima.admin.service.AdUserLoginService;
+import com.heima.model.admin.dtos.AdUserDto;
+import com.heima.model.common.dtos.ResponseResult;
+import com.heima.model.common.enums.AppHttpCodeEnum;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * 管理端登录控制器单元测试。">
+<meta property="og:title" content="Mockito测试代码">
+<meta property="og:description" content="# Controller测试
+
+```java
+package com.heima.admin.controller.v1;
+
+import com.heima.admin.service.AdUserLoginService;
+import com.heima.model.admin.dtos.AdUserDto;
+import com.heima.model.common.dtos.ResponseResult;
+import com.heima.model.common.enums.AppHttpCodeEnum;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * 管理端登录控制器单元测试。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://Eternal4869.github.io/post/Mockito-ce-shi-dai-ma.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/73345601?v=4">
+<title>Mockito测试代码</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Mockito测试代码</h1>
+<div class="title-right">
+    <a href="https://Eternal4869.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Eternal4869/Eternal4869.github.io/issues/40" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>Controller测试</h1>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">package</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">controller</span>.<span class="pl-s1">v1</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">service</span>.<span class="pl-s1">AdUserLoginService</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">dtos</span>.<span class="pl-s1">AdUserDto</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">common</span>.<span class="pl-s1">dtos</span>.<span class="pl-s1">ResponseResult</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">common</span>.<span class="pl-s1">enums</span>.<span class="pl-s1">AppHttpCodeEnum</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">BeforeEach</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">DisplayName</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Test</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">extension</span>.<span class="pl-s1">ExtendWith</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mock</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">MockitoExtension</span>;
+
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">assertj</span>.<span class="pl-s1">core</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Assertions</span>.<span class="pl-s1">assertThat</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">ArgumentMatchers</span>.<span class="pl-s1">any</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mockito</span>.<span class="pl-s1">never</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mockito</span>.<span class="pl-s1">verify</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mockito</span>.<span class="pl-s1">when</span>;
+
+<span class="pl-c">/**</span>
+<span class="pl-c"> * 管理端登录控制器单元测试。</span>
+<span class="pl-c"> * 控制器只做参数空/空白校验，校验通过后原样透传 service.login 的返回结果，</span>
+<span class="pl-c"> * 因此校验分支断言返回 PARAM_INVALID 且不调用 service，合法参数断言透传结果与调用行为。</span>
+<span class="pl-c"> */</span>
+<span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"AdUserLoginController 管理端登录控制器"</span>)
+<span class="pl-c1">@</span><span class="pl-c1">ExtendWith</span>(<span class="pl-smi">MockitoExtension</span>.<span class="pl-k">class</span>)
+<span class="pl-k">class</span> <span class="pl-smi">AdUserLoginControllerTest</span> {
+
+    <span class="pl-c1">@</span><span class="pl-c1">Mock</span>
+    <span class="pl-k">private</span> <span class="pl-smi">AdUserLoginService</span> <span class="pl-s1">adUserLoginService</span>;
+
+    <span class="pl-k">private</span> <span class="pl-smi">AdUserLoginController</span> <span class="pl-s1">adUserLoginController</span>;
+
+    <span class="pl-c1">@</span><span class="pl-c1">BeforeEach</span>
+    <span class="pl-smi">void</span> <span class="pl-en">setUp</span>() {
+        <span class="pl-c">// 控制器使用 Lombok @RequiredArgsConstructor 生成带 final 依赖的构造器，手动 new 并注入 mock</span>
+        <span class="pl-s1">adUserLoginController</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserLoginController</span>(<span class="pl-s1">adUserLoginService</span>);
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：登录参数合法，控制器应把请求透传给 service，并原样返回 service 的成功结果</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 参数合法：透传 service 并返回其成功结果"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_validDto_shouldCallServiceAndReturnItsResult</span>() {
+        <span class="pl-c">// 构造合法登录参数</span>
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"123456"</span>);
+
+        <span class="pl-c">// service 返回一个成功结果（含 user + token 的 map）</span>
+        <span class="pl-smi">java</span>.<span class="pl-smi">util</span>.<span class="pl-smi">Map</span>&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt; <span class="pl-s1">data</span> = <span class="pl-k">new</span> <span class="pl-smi">java</span>.<span class="pl-smi">util</span>.<span class="pl-smi">HashMap</span>&lt;&gt;();
+        <span class="pl-s1">data</span>.<span class="pl-en">put</span>(<span class="pl-s">"token"</span>, <span class="pl-s">"mock-token"</span>);
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">serviceResult</span> = <span class="pl-smi">ResponseResult</span>.<span class="pl-en">okResult</span>(<span class="pl-s1">data</span>);
+        <span class="pl-en">when</span>(<span class="pl-s1">adUserLoginService</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>)).<span class="pl-en">thenReturn</span>(<span class="pl-s1">serviceResult</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginController</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-c">// 控制器不重新包装，直接返回 service 的同一个实例</span>
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>).<span class="pl-en">isSameAs</span>(<span class="pl-s1">serviceResult</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">SUCCESS</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getData</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s1">data</span>);
+        <span class="pl-c">// 确认 service 恰好被调用一次，且传入的就是该 DTO</span>
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserLoginService</span>).<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：登录参数合法但 service 校验失败（如密码错误），控制器应原样透传错误结果，不做额外包装</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login service 返回错误结果：控制器原样透传"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_serviceReturnsError_shouldPassThroughUnchanged</span>() {
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"wrong-password"</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">serviceResult</span> = <span class="pl-smi">ResponseResult</span>.<span class="pl-en">errorResult</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">LOGIN_PASSWORD_ERROR</span>);
+        <span class="pl-en">when</span>(<span class="pl-s1">adUserLoginService</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>)).<span class="pl-en">thenReturn</span>(<span class="pl-s1">serviceResult</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginController</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>).<span class="pl-en">isSameAs</span>(<span class="pl-s1">serviceResult</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">LOGIN_PASSWORD_ERROR</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">LOGIN_PASSWORD_ERROR</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserLoginService</span>).<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：请求体为 null，控制器应直接返回参数无效，不调用 service</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 请求体为 null：返回 PARAM_INVALID 且不调用 service"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_nullDto_shouldReturnParamInvalid</span>() {
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginController</span>.<span class="pl-en">login</span>(<span class="pl-c1">null</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserLoginService</span>, <span class="pl-en">never</span>()).<span class="pl-en">login</span>(<span class="pl-en">any</span>(<span class="pl-smi">AdUserDto</span>.<span class="pl-k">class</span>));
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：用户名为空字符串，控制器应返回参数无效，不调用 service</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 用户名为空：返回 PARAM_INVALID 且不调用 service"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_blankName_shouldReturnParamInvalid</span>() {
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"   "</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"123456"</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginController</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserLoginService</span>, <span class="pl-en">never</span>()).<span class="pl-en">login</span>(<span class="pl-en">any</span>(<span class="pl-smi">AdUserDto</span>.<span class="pl-k">class</span>));
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：密码为空白(null 或空串都算 blank)，控制器应返回参数无效，不调用 service</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 密码为空：返回 PARAM_INVALID 且不调用 service"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_blankPassword_shouldReturnParamInvalid</span>() {
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">""</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginController</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">PARAM_INVALID</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserLoginService</span>, <span class="pl-en">never</span>()).<span class="pl-en">login</span>(<span class="pl-en">any</span>(<span class="pl-smi">AdUserDto</span>.<span class="pl-k">class</span>));
+    }
+}</pre></div>
+<h1>Repository测试</h1>
+<ul>
+<li><code class="notranslate">H2MapperSupport.java</code></li>
+</ul>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">package</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">mapper</span>.<span class="pl-s1">support</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">baomidou</span>.<span class="pl-s1">mybatisplus</span>.<span class="pl-s1">core</span>.<span class="pl-s1">MybatisConfiguration</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">baomidou</span>.<span class="pl-s1">mybatisplus</span>.<span class="pl-s1">extension</span>.<span class="pl-s1">spring</span>.<span class="pl-s1">MybatisSqlSessionFactoryBean</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">apache</span>.<span class="pl-s1">ibatis</span>.<span class="pl-s1">session</span>.<span class="pl-s1">SqlSessionFactory</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">h2</span>.<span class="pl-s1">jdbcx</span>.<span class="pl-s1">JdbcDataSource</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">h2</span>.<span class="pl-s1">tools</span>.<span class="pl-s1">RunScript</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">io</span>.<span class="pl-s1">InputStreamReader</span>;
+<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">nio</span>.<span class="pl-s1">charset</span>.<span class="pl-s1">StandardCharsets</span>;
+<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">sql</span>.<span class="pl-s1">Connection</span>;
+
+<span class="pl-c">/**</span>
+<span class="pl-c"> * Mapper 层 H2 集成测试支持类。</span>
+<span class="pl-c"> * 以 H2 内存库 + MyBatis-Plus 真实 SqlSessionFactory 构建会话，</span>
+<span class="pl-c"> * 供 AdUserMapperTest 直接获取真实 BaseMapper 能力进行 CRUD 验证。</span>
+<span class="pl-c"> * 注意：类名不以 Test 结尾，避免被 surefire 误当成测试类执行。</span>
+<span class="pl-c"> */</span>
+<span class="pl-k">public</span> <span class="pl-k">final</span> <span class="pl-k">class</span> <span class="pl-smi">H2MapperSupport</span> {
+
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">volatile</span> <span class="pl-smi">SqlSessionFactory</span> <span class="pl-s1">factory</span>;
+
+    <span class="pl-k">private</span> <span class="pl-smi">H2MapperSupport</span>() {
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">synchronized</span> <span class="pl-smi">SqlSessionFactory</span> <span class="pl-en">factory</span>() {
+        <span class="pl-k">if</span> (<span class="pl-s1">factory</span> == <span class="pl-c1">null</span>) {
+            <span class="pl-s1">factory</span> = <span class="pl-en">build</span>();
+        }
+        <span class="pl-k">return</span> <span class="pl-s1">factory</span>;
+    }
+
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">SqlSessionFactory</span> <span class="pl-en">build</span>() {
+        <span class="pl-k">try</span> {
+            <span class="pl-smi">JdbcDataSource</span> <span class="pl-s1">ds</span> = <span class="pl-k">new</span> <span class="pl-smi">JdbcDataSource</span>();
+            <span class="pl-s1">ds</span>.<span class="pl-en">setURL</span>(<span class="pl-s">"jdbc:h2:mem:admin_test;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE"</span>);
+            <span class="pl-s1">ds</span>.<span class="pl-en">setUser</span>(<span class="pl-s">"sa"</span>);
+            <span class="pl-s1">ds</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">""</span>);
+            <span class="pl-k">try</span> (<span class="pl-smi">Connection</span> <span class="pl-s1">conn</span> = <span class="pl-s1">ds</span>.<span class="pl-en">getConnection</span>()) {
+                <span class="pl-smi">RunScript</span>.<span class="pl-en">execute</span>(<span class="pl-s1">conn</span>, <span class="pl-k">new</span> <span class="pl-smi">InputStreamReader</span>(
+                        <span class="pl-smi">H2MapperSupport</span>.<span class="pl-k">class</span>.<span class="pl-en">getResourceAsStream</span>(<span class="pl-s">"/db/schema-admin.sql"</span>), <span class="pl-smi">StandardCharsets</span>.<span class="pl-c1">UTF_8</span>));
+            }
+            <span class="pl-smi">MybatisSqlSessionFactoryBean</span> <span class="pl-s1">fb</span> = <span class="pl-k">new</span> <span class="pl-smi">MybatisSqlSessionFactoryBean</span>();
+            <span class="pl-s1">fb</span>.<span class="pl-en">setDataSource</span>(<span class="pl-s1">ds</span>);
+            <span class="pl-smi">MybatisConfiguration</span> <span class="pl-s1">cfg</span> = <span class="pl-k">new</span> <span class="pl-smi">MybatisConfiguration</span>();
+            <span class="pl-s1">cfg</span>.<span class="pl-en">setMapUnderscoreToCamelCase</span>(<span class="pl-c1">true</span>);
+            <span class="pl-s1">fb</span>.<span class="pl-en">setConfiguration</span>(<span class="pl-s1">cfg</span>);
+            <span class="pl-k">return</span> <span class="pl-s1">fb</span>.<span class="pl-en">getObject</span>();
+        } <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> <span class="pl-s1">e</span>) {
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">IllegalStateException</span>(<span class="pl-s1">e</span>);
+        }
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 获取指定 Mapper 的真实实现。</span>
+<span class="pl-c">     * 由于手工构建的 SqlSessionFactory 不会像 MapperScannerConfigurer 那样自动注册 Mapper 接口，</span>
+<span class="pl-c">     * 首次使用时需将其注册进 MybatisPlusMapperRegistry（等价于 @MapperScan 的行为），</span>
+<span class="pl-c">     * 否则会抛 BindingException: ... is not known to the MybatisPlusMapperRegistry。</span>
+<span class="pl-c">     */</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> &lt;<span class="pl-smi">T</span>&gt; <span class="pl-smi">T</span> <span class="pl-en">mapper</span>(<span class="pl-smi">Class</span>&lt;<span class="pl-smi">T</span>&gt; <span class="pl-s1">type</span>) {
+        <span class="pl-smi">SqlSessionFactory</span> <span class="pl-s1">f</span> = <span class="pl-en">factory</span>();
+        <span class="pl-k">if</span> (!<span class="pl-s1">f</span>.<span class="pl-en">getConfiguration</span>().<span class="pl-en">hasMapper</span>(<span class="pl-s1">type</span>)) {
+            <span class="pl-s1">f</span>.<span class="pl-en">getConfiguration</span>().<span class="pl-en">addMapper</span>(<span class="pl-s1">type</span>);
+        }
+        <span class="pl-k">return</span> <span class="pl-s1">f</span>.<span class="pl-en">openSession</span>(<span class="pl-c1">true</span>).<span class="pl-en">getMapper</span>(<span class="pl-s1">type</span>);
+    }
+}</pre></div>
+<ul>
+<li><code class="notranslate">AdUserMapperTest.java</code></li>
+</ul>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">package</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">mapper</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">baomidou</span>.<span class="pl-s1">mybatisplus</span>.<span class="pl-s1">core</span>.<span class="pl-s1">toolkit</span>.<span class="pl-s1">Wrappers</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">mapper</span>.<span class="pl-s1">support</span>.<span class="pl-s1">H2MapperSupport</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">pojos</span>.<span class="pl-s1">AdUser</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">DisplayName</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Test</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">util</span>.<span class="pl-s1">List</span>;
+
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">assertj</span>.<span class="pl-s1">core</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Assertions</span>.<span class="pl-s1">assertThat</span>;
+
+<span class="pl-c">/**</span>
+<span class="pl-c"> * AdUserMapper(BaseMapper&amp;lt;AdUser&amp;gt;) 的 H2 内存库集成测试。</span>
+<span class="pl-c"> * 通过 H2MapperSupport 构建真实 MyBatis-Plus SqlSessionFactory 与 Mapper，</span>
+<span class="pl-c"> * 验证 BaseMapper 的 selectById / selectOne / selectList / insert / updateById / deleteById 能力，</span>
+<span class="pl-c"> * 以及下划线列名到驼峰属性的自动映射（如 login_time -&gt; loginTime）。</span>
+<span class="pl-c"> *</span>
+<span class="pl-c"> * 说明：所有会写库的用例都使用独立的高位 id 并自清理（finally 中删除），</span>
+<span class="pl-c"> * 只读用例也只按种子记录名过滤，保证用例相互独立、可乱序执行。</span>
+<span class="pl-c"> */</span>
+<span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"AdUserMapper H2 集成测试"</span>)
+<span class="pl-k">class</span> <span class="pl-smi">AdUserMapperTest</span> {
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：按主键查询存在的种子数据（id=2 admin 记录），字段应与种子一致</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"selectById 命中种子记录：返回完整字段"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">selectById_existingId_shouldReturnSeedUser</span>() {
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">admin</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>).<span class="pl-en">selectById</span>(<span class="pl-c1">2</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>).<span class="pl-en">isNotNull</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getName</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getPassword</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"5d4e1a406d4a9edbf7b4f10c2a390405"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getSalt</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"123abc"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getNickname</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"ad"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getPhone</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"13320325528"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getEmail</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"admin@qq.com"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getStatus</span>()).<span class="pl-en">isTrue</span>();
+        <span class="pl-c">// 下划线列 login_time/created_time 应映射为驼峰属性</span>
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getLoginTime</span>()).<span class="pl-en">isNotNull</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">admin</span>.<span class="pl-en">getCreatedTime</span>()).<span class="pl-en">isNotNull</span>();
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：按主键查询不存在的 id，应返回 null</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"selectById 未命中：返回 null"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">selectById_notExistId_shouldReturnNull</span>() {
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">notExist</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>).<span class="pl-en">selectById</span>(<span class="pl-c1">9999</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">notExist</span>).<span class="pl-en">isNull</span>();
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：按用户名(wrapper eq)查询，应命中唯一种子记录</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"selectOne 按用户名查询：命中 wukong 记录"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">selectOne_byName_shouldReturnMatchedUser</span>() {
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">wukong</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>)
+                .<span class="pl-en">selectOne</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"wukong"</span>));
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>).<span class="pl-en">isNotNull</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>.<span class="pl-en">getId</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-c1">1</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>.<span class="pl-en">getPassword</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"123"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>.<span class="pl-en">getSalt</span>()).<span class="pl-en">isNull</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>.<span class="pl-en">getNickname</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"mo"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">wukong</span>.<span class="pl-en">getStatus</span>()).<span class="pl-en">isTrue</span>();
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：按不存在的用户名查询，应返回 null</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"selectOne 按不存在用户名查询：返回 null"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">selectOne_byNameNotExist_shouldReturnNull</span>() {
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">notExist</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>)
+                .<span class="pl-en">selectOne</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"ghost_user"</span>));
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">notExist</span>).<span class="pl-en">isNull</span>();
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：selectList 按种子用户名集合过滤，应返回全部 3 条种子记录</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"selectList 按种子用户名过滤：返回 3 条记录"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">selectList_bySeedNames_shouldReturnAllSeedUsers</span>() {
+        <span class="pl-smi">List</span>&lt;<span class="pl-smi">AdUser</span>&gt; <span class="pl-s1">users</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>)
+                .<span class="pl-en">selectList</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>()
+                        .<span class="pl-en">in</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"admin"</span>, <span class="pl-s">"wukong"</span>, <span class="pl-s">"guest"</span>));
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">users</span>).<span class="pl-en">hasSize</span>(<span class="pl-c1">3</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">users</span>)
+                .<span class="pl-en">extracting</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>)
+                .<span class="pl-en">containsExactlyInAnyOrder</span>(<span class="pl-s">"admin"</span>, <span class="pl-s">"wukong"</span>, <span class="pl-s">"guest"</span>);
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：insert 新增管理员（id 由 AUTO_INCREMENT 自增生成），返回影响行数 1，</span>
+<span class="pl-c">     * 随后按唯一名称查回实体，验证字段已完整落库</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"insert 新增记录：落库后可查回"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">insert_newUser_shouldPersistAndBeSelectable</span>() {
+        <span class="pl-smi">AdUserMapper</span> <span class="pl-s1">mapper</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>);
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">user</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUser</span>();
+        <span class="pl-s1">user</span>.<span class="pl-en">setName</span>(<span class="pl-s">"mapper_insert_user"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"insert_pwd_md5"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setSalt</span>(<span class="pl-s">"ins"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setNickname</span>(<span class="pl-s">"ins"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setPhone</span>(<span class="pl-s">"13900000001"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setStatus</span>(<span class="pl-c1">true</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setEmail</span>(<span class="pl-s">"insert@heima.com"</span>);
+        <span class="pl-k">try</span> {
+            <span class="pl-smi">int</span> <span class="pl-s1">rows</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">insert</span>(<span class="pl-s1">user</span>);
+
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">rows</span>).<span class="pl-en">isEqualTo</span>(<span class="pl-c1">1</span>);
+            <span class="pl-smi">AdUser</span> <span class="pl-s1">saved</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"mapper_insert_user"</span>));
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>).<span class="pl-en">isNotNull</span>();
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getId</span>()).<span class="pl-en">isNotNull</span>();
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getName</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"mapper_insert_user"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getPassword</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"insert_pwd_md5"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getSalt</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"ins"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getNickname</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"ins"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getPhone</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"13900000001"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getEmail</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"insert@heima.com"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">saved</span>.<span class="pl-en">getStatus</span>()).<span class="pl-en">isTrue</span>();
+        } <span class="pl-k">finally</span> {
+            <span class="pl-c">// 清理，避免污染共享内存库中的其它用例</span>
+            <span class="pl-s1">mapper</span>.<span class="pl-en">delete</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"mapper_insert_user"</span>));
+        }
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：updateById 修改已存在记录的可变字段，应只影响该行且落库生效</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"updateById 修改字段：重新查询可见变更"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">updateById_shouldPersistChanges</span>() {
+        <span class="pl-smi">AdUserMapper</span> <span class="pl-s1">mapper</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>);
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">user</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUser</span>();
+        <span class="pl-s1">user</span>.<span class="pl-en">setName</span>(<span class="pl-s">"mapper_update_user"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"update_pwd_md5"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setSalt</span>(<span class="pl-s">"upd"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setNickname</span>(<span class="pl-s">"original"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setPhone</span>(<span class="pl-s">"13900000010"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setStatus</span>(<span class="pl-c1">true</span>);
+        <span class="pl-s1">mapper</span>.<span class="pl-en">insert</span>(<span class="pl-s1">user</span>);
+        <span class="pl-k">try</span> {
+            <span class="pl-c">// 通过唯一名称查回实体，取得自增生成的真实 id</span>
+            <span class="pl-smi">AdUser</span> <span class="pl-s1">persisted</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"mapper_update_user"</span>));
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">persisted</span>).<span class="pl-en">isNotNull</span>();
+            <span class="pl-c">// 修改若干字段后执行 updateById</span>
+            <span class="pl-s1">persisted</span>.<span class="pl-en">setNickname</span>(<span class="pl-s">"renamed_nick"</span>);
+            <span class="pl-s1">persisted</span>.<span class="pl-en">setPhone</span>(<span class="pl-s">"13900000011"</span>);
+            <span class="pl-s1">persisted</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"new_pwd_md5"</span>);
+            <span class="pl-s1">persisted</span>.<span class="pl-en">setStatus</span>(<span class="pl-c1">false</span>);
+
+            <span class="pl-smi">int</span> <span class="pl-s1">rows</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">updateById</span>(<span class="pl-s1">persisted</span>);
+
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">rows</span>).<span class="pl-en">isEqualTo</span>(<span class="pl-c1">1</span>);
+            <span class="pl-smi">AdUser</span> <span class="pl-s1">reloaded</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">selectById</span>(<span class="pl-s1">persisted</span>.<span class="pl-en">getId</span>());
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>).<span class="pl-en">isNotNull</span>();
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getNickname</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"renamed_nick"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getPhone</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"13900000011"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getPassword</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"new_pwd_md5"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getStatus</span>()).<span class="pl-en">isFalse</span>();
+            <span class="pl-c">// 未修改字段保持不变</span>
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getName</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"mapper_update_user"</span>);
+            <span class="pl-en">assertThat</span>(<span class="pl-s1">reloaded</span>.<span class="pl-en">getSalt</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"upd"</span>);
+        } <span class="pl-k">finally</span> {
+            <span class="pl-s1">mapper</span>.<span class="pl-en">delete</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"mapper_update_user"</span>));
+        }
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：deleteById 删除新增记录，删除后按 id 查不到</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"deleteById 删除记录：删除后查不到"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">deleteById_shouldRemoveRow</span>() {
+        <span class="pl-smi">AdUserMapper</span> <span class="pl-s1">mapper</span> = <span class="pl-smi">H2MapperSupport</span>.<span class="pl-en">mapper</span>(<span class="pl-smi">AdUserMapper</span>.<span class="pl-k">class</span>);
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">user</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUser</span>();
+        <span class="pl-s1">user</span>.<span class="pl-en">setName</span>(<span class="pl-s">"mapper_delete_user"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"delete_pwd_md5"</span>);
+        <span class="pl-s1">user</span>.<span class="pl-en">setNickname</span>(<span class="pl-s">"del"</span>);
+        <span class="pl-s1">mapper</span>.<span class="pl-en">insert</span>(<span class="pl-s1">user</span>);
+
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">persisted</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-smi">Wrappers</span>.&lt;<span class="pl-smi">AdUser</span>&gt;<span class="pl-en">lambdaQuery</span>().<span class="pl-en">eq</span>(<span class="pl-smi">AdUser</span>::<span class="pl-s1">getName</span>, <span class="pl-s">"mapper_delete_user"</span>));
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">persisted</span>).<span class="pl-en">isNotNull</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">persisted</span>.<span class="pl-en">getId</span>()).<span class="pl-en">isNotNull</span>();
+
+        <span class="pl-smi">int</span> <span class="pl-s1">rows</span> = <span class="pl-s1">mapper</span>.<span class="pl-en">deleteById</span>(<span class="pl-s1">persisted</span>.<span class="pl-en">getId</span>());
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">rows</span>).<span class="pl-en">isEqualTo</span>(<span class="pl-c1">1</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">mapper</span>.<span class="pl-en">selectById</span>(<span class="pl-s1">persisted</span>.<span class="pl-en">getId</span>())).<span class="pl-en">isNull</span>();
+    }
+}</pre></div>
+<h1>Service测试</h1>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">package</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">service</span>.<span class="pl-s1">impl</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">baomidou</span>.<span class="pl-s1">mybatisplus</span>.<span class="pl-s1">core</span>.<span class="pl-s1">conditions</span>.<span class="pl-s1">Wrapper</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">mapper</span>.<span class="pl-s1">AdUserMapper</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">dtos</span>.<span class="pl-s1">AdUserDto</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">admin</span>.<span class="pl-s1">pojos</span>.<span class="pl-s1">AdUser</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">common</span>.<span class="pl-s1">dtos</span>.<span class="pl-s1">ResponseResult</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">model</span>.<span class="pl-s1">common</span>.<span class="pl-s1">enums</span>.<span class="pl-s1">AppHttpCodeEnum</span>;
+<span class="pl-k">import</span> <span class="pl-s1">com</span>.<span class="pl-s1">heima</span>.<span class="pl-s1">utils</span>.<span class="pl-s1">common</span>.<span class="pl-s1">AppJwtUtil</span>;
+<span class="pl-k">import</span> <span class="pl-s1">io</span>.<span class="pl-s1">jsonwebtoken</span>.<span class="pl-s1">Claims</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">BeforeEach</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">DisplayName</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Test</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">api</span>.<span class="pl-s1">extension</span>.<span class="pl-s1">ExtendWith</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mock</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">junit</span>.<span class="pl-s1">jupiter</span>.<span class="pl-s1">MockitoExtension</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">springframework</span>.<span class="pl-s1">test</span>.<span class="pl-s1">util</span>.<span class="pl-s1">ReflectionTestUtils</span>;
+<span class="pl-k">import</span> <span class="pl-s1">org</span>.<span class="pl-s1">springframework</span>.<span class="pl-s1">util</span>.<span class="pl-s1">DigestUtils</span>;
+
+<span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">util</span>.<span class="pl-s1">Map</span>;
+
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">assertj</span>.<span class="pl-s1">core</span>.<span class="pl-s1">api</span>.<span class="pl-s1">Assertions</span>.<span class="pl-s1">assertThat</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">ArgumentMatchers</span>.<span class="pl-s1">any</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mockito</span>.<span class="pl-s1">verify</span>;
+<span class="pl-k">import</span> <span class="pl-k">static</span> <span class="pl-s1">org</span>.<span class="pl-s1">mockito</span>.<span class="pl-s1">Mockito</span>.<span class="pl-s1">when</span>;
+
+<span class="pl-c">/**</span>
+<span class="pl-c"> * 管理端登录服务实现单元测试（纯 Mockito，不启动 Spring 容器）。</span>
+<span class="pl-c"> * 被测类 AdUserLoginServiceImpl extends ServiceImpl&amp;lt;AdUserMapper, AdUser&amp;gt;，</span>
+<span class="pl-c"> * 其父类 ServiceImpl 通过 @Autowired 注入字段 baseMapper（声明在父类，字段名就叫 baseMapper），</span>
+<span class="pl-c"> * login 内部 getOne(...) 实际走 baseMapper.selectOne(...)，</span>
+<span class="pl-c"> * 因此手动 new 被测对象后，用 ReflectionTestUtils 把 AdUserMapper mock 注入 baseMapper 字段。</span>
+<span class="pl-c"> */</span>
+<span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"AdUserLoginServiceImpl 管理端登录服务"</span>)
+<span class="pl-c1">@</span><span class="pl-c1">ExtendWith</span>(<span class="pl-smi">MockitoExtension</span>.<span class="pl-k">class</span>)
+<span class="pl-k">class</span> <span class="pl-smi">AdUserLoginServiceImplTest</span> {
+
+    <span class="pl-c1">@</span><span class="pl-c1">Mock</span>
+    <span class="pl-k">private</span> <span class="pl-smi">AdUserMapper</span> <span class="pl-s1">adUserMapper</span>;
+
+    <span class="pl-k">private</span> <span class="pl-smi">AdUserLoginServiceImpl</span> <span class="pl-s1">adUserLoginService</span>;
+
+    <span class="pl-c1">@</span><span class="pl-c1">BeforeEach</span>
+    <span class="pl-smi">void</span> <span class="pl-en">setUp</span>() {
+        <span class="pl-s1">adUserLoginService</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserLoginServiceImpl</span>();
+        <span class="pl-smi">ReflectionTestUtils</span>.<span class="pl-en">setField</span>(<span class="pl-s1">adUserLoginService</span>, <span class="pl-s">"baseMapper"</span>, <span class="pl-s1">adUserMapper</span>);
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：登录成功——用户存在且密码(明文+salt 的 MD5)匹配，</span>
+<span class="pl-c">     * 应返回 code=200，data 中含 user(脱敏：password/salt 被清空)与可解析的 token</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 用户存在且密码正确：返回 200，data 含脱敏 user 与 token"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_userExistsAndPasswordMatch_shouldReturnOkWithUserAndToken</span>() {
+        <span class="pl-c">// 与 SQL 种子 admin 记录口径一致：salt = 123abc，原始密码 123456</span>
+        <span class="pl-smi">String</span> <span class="pl-s1">salt</span> = <span class="pl-s">"123abc"</span>;
+        <span class="pl-smi">String</span> <span class="pl-s1">rawPassword</span> = <span class="pl-s">"123456"</span>;
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">adUser</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUser</span>();
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setId</span>(<span class="pl-c1">2</span>);
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setSalt</span>(<span class="pl-s1">salt</span>);
+        <span class="pl-c">// 密文 = MD5(明文 + salt)，与被测实现里 DigestUtils.md5DigestAsHex((password + salt).getBytes()) 计算方式一致</span>
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setPassword</span>(<span class="pl-smi">DigestUtils</span>.<span class="pl-en">md5DigestAsHex</span>((<span class="pl-s1">rawPassword</span> + <span class="pl-s1">salt</span>).<span class="pl-en">getBytes</span>()));
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setNickname</span>(<span class="pl-s">"ad"</span>);
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setPhone</span>(<span class="pl-s">"13320325528"</span>);
+
+        <span class="pl-c">// 数据库中存在该用户</span>
+        <span class="pl-en">when</span>(<span class="pl-s1">adUserMapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>))).<span class="pl-en">thenReturn</span>(<span class="pl-s1">adUser</span>);
+
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s1">rawPassword</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginService</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-c">// 成功响应</span>
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">SUCCESS</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-c">// data 为 {user, token} 的 map</span>
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getData</span>()).<span class="pl-en">isInstanceOf</span>(<span class="pl-smi">Map</span>.<span class="pl-k">class</span>);
+        <span class="pl-smi">Map</span>&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt; <span class="pl-s1">data</span> = (<span class="pl-smi">Map</span>&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt;) <span class="pl-s1">result</span>.<span class="pl-en">getData</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">data</span>).<span class="pl-en">containsKeys</span>(<span class="pl-s">"user"</span>, <span class="pl-s">"token"</span>);
+        <span class="pl-c">// 返回的 user 就是查询出的同一实例，且敏感字段 password/salt 已被清空</span>
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">data</span>.<span class="pl-en">get</span>(<span class="pl-s">"user"</span>)).<span class="pl-en">isSameAs</span>(<span class="pl-s1">adUser</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">adUser</span>.<span class="pl-en">getPassword</span>()).<span class="pl-en">isEmpty</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">adUser</span>.<span class="pl-en">getSalt</span>()).<span class="pl-en">isEmpty</span>();
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">adUser</span>.<span class="pl-en">getName</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-c">// token 非空且用真实 AppJwtUtil 可解析，id 载荷为 userId</span>
+        <span class="pl-smi">String</span> <span class="pl-s1">token</span> = (<span class="pl-smi">String</span>) <span class="pl-s1">data</span>.<span class="pl-en">get</span>(<span class="pl-s">"token"</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">token</span>).<span class="pl-en">isNotBlank</span>();
+        <span class="pl-smi">Claims</span> <span class="pl-s1">claims</span> = <span class="pl-smi">AppJwtUtil</span>.<span class="pl-en">getClaimsBody</span>(<span class="pl-s1">token</span>);
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">claims</span>).<span class="pl-en">isNotNull</span>();
+        <span class="pl-en">assertThat</span>(((<span class="pl-smi">Number</span>) <span class="pl-s1">claims</span>.<span class="pl-en">get</span>(<span class="pl-s">"id"</span>)).<span class="pl-en">longValue</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-s1">adUser</span>.<span class="pl-en">getId</span>().<span class="pl-en">longValue</span>());
+        <span class="pl-c">// 确认只查询了一次用户</span>
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserMapper</span>).<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>));
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：用户名在库中不存在，应返回 DATA_NOT_EXIST，不进入密码校验与签发流程</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 用户不存在：返回 DATA_NOT_EXIST"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_userNotExist_shouldReturnDataNotExist</span>() {
+        <span class="pl-c">// 数据库查无此人</span>
+        <span class="pl-en">when</span>(<span class="pl-s1">adUserMapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>))).<span class="pl-en">thenReturn</span>(<span class="pl-c1">null</span>);
+
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"nobody"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"whatever"</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginService</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">DATA_NOT_EXIST</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">DATA_NOT_EXIST</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getData</span>()).<span class="pl-en">isNull</span>();
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserMapper</span>).<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>));
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 场景：用户存在但密码不匹配（MD5 不一致），应返回 LOGIN_PASSWORD_ERROR 且不签发 token</span>
+<span class="pl-c">     */</span>
+    <span class="pl-c1">@</span><span class="pl-c1">Test</span>
+    <span class="pl-c1">@</span><span class="pl-c1">DisplayName</span>(<span class="pl-s">"login 密码错误：返回 LOGIN_PASSWORD_ERROR"</span>)
+    <span class="pl-smi">void</span> <span class="pl-en">login_passwordMismatch_shouldReturnLoginPasswordError</span>() {
+        <span class="pl-smi">String</span> <span class="pl-s1">salt</span> = <span class="pl-s">"123abc"</span>;
+        <span class="pl-smi">AdUser</span> <span class="pl-s1">adUser</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUser</span>();
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setId</span>(<span class="pl-c1">2</span>);
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setSalt</span>(<span class="pl-s1">salt</span>);
+        <span class="pl-c">// 库中存的是 123456 的加盐密文</span>
+        <span class="pl-s1">adUser</span>.<span class="pl-en">setPassword</span>(<span class="pl-smi">DigestUtils</span>.<span class="pl-en">md5DigestAsHex</span>((<span class="pl-s">"123456"</span> + <span class="pl-s1">salt</span>).<span class="pl-en">getBytes</span>()));
+
+        <span class="pl-en">when</span>(<span class="pl-s1">adUserMapper</span>.<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>))).<span class="pl-en">thenReturn</span>(<span class="pl-s1">adUser</span>);
+
+        <span class="pl-smi">AdUserDto</span> <span class="pl-s1">dto</span> = <span class="pl-k">new</span> <span class="pl-smi">AdUserDto</span>();
+        <span class="pl-s1">dto</span>.<span class="pl-en">setName</span>(<span class="pl-s">"admin"</span>);
+        <span class="pl-s1">dto</span>.<span class="pl-en">setPassword</span>(<span class="pl-s">"wrong-password"</span>);
+
+        <span class="pl-smi">ResponseResult</span> <span class="pl-s1">result</span> = <span class="pl-s1">adUserLoginService</span>.<span class="pl-en">login</span>(<span class="pl-s1">dto</span>);
+
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getCode</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">LOGIN_PASSWORD_ERROR</span>.<span class="pl-en">getCode</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getErrorMessage</span>()).<span class="pl-en">isEqualTo</span>(<span class="pl-smi">AppHttpCodeEnum</span>.<span class="pl-c1">LOGIN_PASSWORD_ERROR</span>.<span class="pl-en">getErrorMessage</span>());
+        <span class="pl-en">assertThat</span>(<span class="pl-s1">result</span>.<span class="pl-en">getData</span>()).<span class="pl-en">isNull</span>();
+        <span class="pl-en">verify</span>(<span class="pl-s1">adUserMapper</span>).<span class="pl-en">selectOne</span>(<span class="pl-en">any</span>(<span class="pl-smi">Wrapper</span>.<span class="pl-k">class</span>));
+    }
+}</pre></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://Eternal4869.github.io">学习日记</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Eternal4869/Eternal4869.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
